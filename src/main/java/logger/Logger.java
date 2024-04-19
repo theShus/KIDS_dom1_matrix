@@ -7,8 +7,7 @@ public class Logger {
     private static final boolean propertyStorage = true;
 
     //Crawler
-    private static final boolean logCrawler = false;
-    private static final boolean crawlerJobDetection = true;
+    private static final boolean logExplorer = false;
 
     //Threads / Jobs
     private static final boolean jobDispatcher = false;
@@ -32,13 +31,8 @@ public class Logger {
         System.out.println(Color.RED_BOLD + message + Color.RESET);
     }
 
-    public void logCrawler(String message){
-        if (!logCrawler) return;
-        System.out.println(Color.YELLOW + message + Color.RESET);
-    }
-
-    public void crawlerJobDetection(String message){
-        if (!crawlerJobDetection) return;
+    public void logExplorer(String message){
+        if (!logExplorer) return;
         System.out.println(Color.YELLOW + message + Color.RESET);
     }
 
