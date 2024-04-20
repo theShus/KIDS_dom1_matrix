@@ -19,7 +19,7 @@ public class App {
 
 
     //Queue
-    public static final BlockingQueue<Task> unsortedTaskQueue = new LinkedBlockingQueue<>(100);
+    public static final BlockingQueue<Task> taskQueue = new LinkedBlockingQueue<>(100);
 
     //Results
     public static final Map<String, Result> scannedMatrices = new ConcurrentHashMap<>();

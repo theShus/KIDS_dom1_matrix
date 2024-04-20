@@ -68,7 +68,7 @@ public class SystemExplorer extends Thread {
 
         if (lastModifiedMap.getOrDefault(fileToExplore.getName(), 0L) != lastModified) {
             lastModifiedMap.put(fileToExplore.getName(), lastModified);
-            App.jobQueue.put(new ScanTask(filePath));
+            App.taskQueue.put(new ScanTask(filePath));
         }
     }
 
