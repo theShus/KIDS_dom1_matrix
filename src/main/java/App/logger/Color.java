@@ -1,4 +1,4 @@
-package logger;
+package App.logger;
 
 public enum Color {
     RESET("\033[0m"),

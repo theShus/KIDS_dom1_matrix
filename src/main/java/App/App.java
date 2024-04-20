@@ -1,11 +1,17 @@
 package App;
 
-import App.data.FileJob;
+import App.matrixDat.MatrixData;
+import App.matrixDat.task.MultiplyTask;
+import App.matrixDat.task.Task;
+import App.result.Result;
 import App.singleThread.SystemExplorer;
-import logger.Logger;
+import App.logger.Logger;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -13,7 +19,11 @@ public class App {
 
 
     //Queue
-    public static BlockingQueue<FileJob> jobQueue = new LinkedBlockingQueue<>(100);
+    public static final BlockingQueue<Task> unsortedTaskQueue = new LinkedBlockingQueue<>(100);
+
+    //Results
+    public static final Map<String, Result> scannedMatrices = new ConcurrentHashMap<>();
+    public static final Map<String, Result> multipliedMatrices = new ConcurrentHashMap<>();
 
     //Else
     private static final CopyOnWriteArrayList<String> dirsToExplore = new CopyOnWriteArrayList<>();
@@ -21,7 +31,9 @@ public class App {
 
     //Threads
     private static final SystemExplorer systemExplorer = new SystemExplorer(dirsToExplore);
-
+    //todo task coordinator
+    //todo file scanner
+    //todo matrix multiplier
 
     public void start() {
         PropertyStorage.getInstance().loadProperties();

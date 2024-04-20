@@ -2,7 +2,9 @@ package App.singleThread;
 
 import App.App;
 import App.PropertyStorage;
-import App.data.FileJob;
+import App.matrixDat.task.MultiplyTask;
+import App.matrixDat.task.ScanTask;
+import App.matrixDat.task.TaskType;
 
 import java.io.File;
 import java.util.HashMap;
@@ -66,7 +68,7 @@ public class SystemExplorer extends Thread {
 
         if (lastModifiedMap.getOrDefault(fileToExplore.getName(), 0L) != lastModified) {
             lastModifiedMap.put(fileToExplore.getName(), lastModified);
-            App.jobQueue.put(new FileJob(filePath, fileToExplore.getName()));
+            App.jobQueue.put(new ScanTask(filePath));
         }
     }
 
