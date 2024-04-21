@@ -7,10 +7,7 @@ public class MultiplyTask implements Task{
     private MatrixData matrixData1;
     private MatrixData matrixData2;
 
-    public MultiplyTask(MatrixData matrixData1, MatrixData matrixData2) {
-        this.matrixData1 = matrixData1;
-        this.matrixData2 = matrixData2;
-    }
+
 
     @Override
     public TaskType getTaskType() {

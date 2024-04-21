@@ -1,10 +1,8 @@
-package App.singleThread;
+package App.threadWorkers;
 
 import App.App;
 import App.PropertyStorage;
-import App.matrixDat.task.MultiplyTask;
 import App.matrixDat.task.ScanTask;
-import App.matrixDat.task.TaskType;
 
 import java.io.File;
 import java.util.HashMap;

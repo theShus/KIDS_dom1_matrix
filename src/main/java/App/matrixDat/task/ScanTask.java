@@ -19,5 +19,4 @@ public class ScanTask implements Task{
         return filePath;
     }
 
-
 }

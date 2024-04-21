@@ -1,5 +1,7 @@
 package App.logger;
 
+import javax.swing.table.TableRowSorter;
+
 public class Logger {
 
     //Standard
@@ -10,13 +12,13 @@ public class Logger {
     private static final boolean logExplorer = false;
 
     //Threads / Jobs
-    private static final boolean jobDispatcher = false;
+    private static final boolean jobDispatcher = true;
     private static final boolean fileScanner = true;
     private static final boolean webScanner = false;
     private static final boolean urlAlreadyScanned = false;
 
     //Results
-    private static final boolean resultRetrieverSorter = false;
+    private static final boolean resultRetrieverSorter = true;
     private static final boolean resultRetriever = true;
 
 
