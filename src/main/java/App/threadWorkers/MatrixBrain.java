@@ -22,10 +22,8 @@ public class MatrixBrain extends Thread{
                 if (result.getScanType() == TaskType.CREATE) {
                     ScanResult scanResult = (ScanResult) result;
 
-
                     if (scanResult.futureIsDone()){
                         App.logger.resultRetrieverSorter("Matrix " + scanResult.getMatrixName() + " is finished scanning, adding to cache");
-
                         MatrixData matrixData = new MatrixData(scanResult.getMatrixName(), scanResult.getResult(), scanResult.getRows(), scanResult.getCols());
                         App.scannedMatrices.put(scanResult.getMatrixName(), matrixData);
                     }

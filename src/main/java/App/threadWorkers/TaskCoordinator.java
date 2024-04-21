@@ -22,14 +22,7 @@ public class TaskCoordinator extends Thread {
 
     private boolean running = true;
 
-    private final MatrixExtractor matrixExtractor = new MatrixExtractor();
 
-    private final ExecutorCompletionService<Map<String, Integer>> completionService;
-
-    public TaskCoordinator() {
-        ExecutorService threadPool = Executors.newCachedThreadPool();
-        this.completionService = new ExecutorCompletionService<>(threadPool);
-    }
 
     @Override
     public void run() {
@@ -38,24 +31,10 @@ public class TaskCoordinator extends Thread {
                 Task task = App.taskQueue.take();
 
                 if (task instanceof ScanTask) {
-//                    String filePath = ((ScanTask) task).getFilePath(); //todo vrati ovo nazad
-                    String filePath = "C:\\Users\\Shus\\Programming\\IdeaProjects\\KIDS_matrix\\KIDS_matrix\\src\\main\\resources\\matrix_data\\c3_file.rix";
+                    String filePath = ((ScanTask) task).getFilePath(); //todo vrati ovo nazad
+//                    String filePath = "C:\\Users\\Shus\\Programming\\IdeaProjects\\KIDS_matrix\\KIDS_matrix\\src\\main\\resources\\matrix_data\\c3_file.rix";
                     App.logger.jobDispatcher("Submitted matrix for scanning: " + filePath);
-
-                    //split matrix
-                    List<Future<Map<String, Integer>>> matrixScanResults = new ArrayList<>();
-                    SplitMatrix splitMatrix = matrixExtractor.calculateSegments(filePath); //stavljamo u split matrix jer je lakse da se izvadi ime matrice tokom splitovanja nego posle
-
-                    //submit segments for scanning
-                    for (long[] segment : splitMatrix.getSegments()) {
-                        long start = segment[0];
-                        long end = segment[1];
-                        matrixScanResults.add(this.completionService.submit(new MatrixScanWorker(filePath, start, end)));
-                    }
-
-                    //add future scan results to result queue
-                    App.logger.jobDispatcher("Sent future results to queue");
-                    App.resultQueue.add(new ScanResult(splitMatrix.getMatrixName(), matrixScanResults, splitMatrix.getRows(), splitMatrix.getCols()));
+                    App.matrixExtractor.sendMatrixForScanning(filePath);
                 }
                 else if (task.getTaskType() == TaskType.MULTIPLY) {
                     App.logger.jobDispatcher("Submitted matrices for multiplication: " + ((MultiplyTask) task).getMatrix1().getName() + " * " + ((MultiplyTask) task).getMatrix2().getName());

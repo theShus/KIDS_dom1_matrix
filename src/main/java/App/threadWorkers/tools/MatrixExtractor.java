@@ -1,12 +1,45 @@
 package App.threadWorkers.tools;
 
+import App.App;
 import App.PropertyStorage;
+import App.result.ScanResult;
+import App.threadWorkers.workers.MatrixScanWorker;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MatrixExtractor {
+
+    private final ExecutorCompletionService<Map<String, Integer>> completionService;
+
+    public MatrixExtractor() {
+        ExecutorService threadPool = Executors.newCachedThreadPool();
+        this.completionService = new ExecutorCompletionService<>(threadPool);
+    }
+
+    public void sendMatrixForScanning(String filePath) throws IOException {
+        //split matrix
+        List<Future<Map<String, Integer>>> matrixScanResults = new ArrayList<>();
+        SplitMatrix splitMatrix = calculateSegments(filePath); //stavljamo u split matrix jer je lakse da se izvadi ime matrice tokom splitovanja nego posle
+
+        //submit segments for scanning
+        for (long[] segment : splitMatrix.getSegments()) {
+            long start = segment[0];
+            long end = segment[1];
+            matrixScanResults.add(this.completionService.submit(new MatrixScanWorker(filePath, start, end)));
+        }
+
+        //add future scan results to result queue
+        App.logger.jobDispatcher("Sent future results to queue");
+        App.resultQueue.add(new ScanResult(splitMatrix.getMatrixName(), matrixScanResults, splitMatrix.getRows(), splitMatrix.getCols()));
+    }
 
 
     /*

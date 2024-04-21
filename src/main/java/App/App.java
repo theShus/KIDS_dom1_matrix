@@ -8,6 +8,7 @@ import App.result.Result;
 import App.threadWorkers.MatrixBrain;
 import App.threadWorkers.SystemExplorer;
 import App.threadWorkers.TaskCoordinator;
+import App.threadWorkers.tools.MatrixExtractor;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -30,6 +31,7 @@ public class App {
     //Else
     private static final CopyOnWriteArrayList<String> dirsToExplore = new CopyOnWriteArrayList<>();
     public static final Logger logger = new Logger();
+    public static final MatrixExtractor matrixExtractor = new MatrixExtractor();
 
     //Threads
     private static final SystemExplorer systemExplorer = new SystemExplorer(dirsToExplore);
@@ -41,8 +43,8 @@ public class App {
         PropertyStorage.getInstance().loadProperties();
         dirsToExplore.add(PropertyStorage.getInstance().getStart_dir());
 
-//        systemExplorer.start(); //todo remove this below
-        taskQueue.add(new ScanTask("C:\\Users\\Shus\\Programming\\IdeaProjects\\KIDS_matrix\\KIDS_matrix\\src\\main\\resources\\matrix_data\\c3_file.rix"));
+        systemExplorer.start(); //todo remove this below
+//        taskQueue.add(new ScanTask("C:\\Users\\Shus\\Programming\\IdeaProjects\\KIDS_matrix\\KIDS_matrix\\src\\main\\resources\\matrix_data\\c3_file.rix"));
         taskCoordinator.start();
         matrixBrain.start();
 
@@ -71,6 +73,8 @@ public class App {
                 case "info" -> {
                     System.out.println("info");
 
+
+                    System.out.println(scannedMatrices.get("C3").getMatrix()[0][0]);
 
 //                    printMatrix(scannedMatrices.get("C3").getMatrix());
 
