@@ -5,7 +5,7 @@ public class MatrixData {
     private int[][] matrix;
     private int rows;
     private int cols;
-    private final String filePath;
+    private String filePath;
 
     public MatrixData(String name, int[][] matrix, int rows, int cols, String filePath) {
         this.name = name;
@@ -25,6 +25,10 @@ public class MatrixData {
 
     public String getName() {
         return name;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public void setName(String name) {

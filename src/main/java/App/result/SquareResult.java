@@ -22,8 +22,15 @@ public class SquareResult implements Result<MatrixData>{
     @Override
     public MatrixData getResult() {
         try {
+            MatrixData matrixData = squaredMatrixData.get();
+            matrixData.setName(matrixData.getName() + "_square");
+            matrixData.setFilePath("-");
+            int newSize = Math.max(matrixData.getCols(), matrixData.getRows());
+            matrixData.setRows(newSize);
+            matrixData.setCols(newSize);
             return squaredMatrixData.get();
-        } catch (InterruptedException | ExecutionException e) {
+        }
+        catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
     }

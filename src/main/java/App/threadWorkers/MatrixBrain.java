@@ -33,7 +33,6 @@ public class MatrixBrain extends Thread{
                 }
                 else if (result.getScanType() == TaskType.SQUARE) {//todo check
                     MatrixData squaredMatrixData = ((SquareResult) result).getResult();
-                    squaredMatrixData.setName(squaredMatrixData.getName() + "_s");
                     App.logger.resultRetrieverSorter("Matrix " + squaredMatrixData.getName() + " has been squared, adding to cache");
                     App.cashedMatrices.put(squaredMatrixData.getName(), squaredMatrixData);
                 }
