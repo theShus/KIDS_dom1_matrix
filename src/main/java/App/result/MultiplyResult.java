@@ -1,8 +1,6 @@
 package App.result;
 
-import App.matrixDat.task.TaskType;
-
-import java.util.Map;
+import App.matrixData.task.TaskType;
 
 public class MultiplyResult implements Result{
     @Override

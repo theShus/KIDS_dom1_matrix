@@ -1,11 +1,7 @@
-package App.threadWorkers.workers;
-
-import App.matrixDat.task.ScanTask;
-import App.result.ScanResult;
+package App.threadWorkers.pools.workers;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;

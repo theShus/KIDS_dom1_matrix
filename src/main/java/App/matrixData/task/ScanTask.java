@@ -1,6 +1,4 @@
-package App.matrixDat.task;
-
-import App.matrixDat.MatrixData;
+package App.matrixData.task;
 
 public class ScanTask implements Task{
 

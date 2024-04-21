@@ -15,6 +15,7 @@ public class PropertyStorage {
     private long maximum_file_chunk_size;
     private int maximum_rows_size;
     private String start_dir;
+    private String save_dir;
 
     public PropertyStorage() {
         properties = new Properties();
@@ -36,14 +37,13 @@ public class PropertyStorage {
         maximum_file_chunk_size = Long.parseLong(readProperty("maximum_file_chunk_size"));
         maximum_rows_size = Integer.parseInt(readProperty("maximum_rows_size"));
         start_dir = readProperty("start_dir");
+        save_dir = readProperty("save_dir");
     }
 
     private String readProperty(String keyName) {
         App.logger.propertyStorage("Loading property " + keyName);
         return properties.getProperty(keyName, "Missing data");
     }
-
-
 
     public String getStart_dir() {
         return start_dir;
@@ -61,4 +61,7 @@ public class PropertyStorage {
         return maximum_rows_size;
     }
 
+    public String getSave_dir() {
+        return save_dir;
+    }
 }

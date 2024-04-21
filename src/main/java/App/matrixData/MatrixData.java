@@ -1,4 +1,4 @@
-package App.matrixDat;
+package App.matrixData;
 
 public class MatrixData {
     private String name;

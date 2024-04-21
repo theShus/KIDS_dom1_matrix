@@ -1,13 +1,13 @@
 package App;
 
 import App.logger.Logger;
-import App.matrixDat.MatrixData;
-import App.matrixDat.task.Task;
+import App.matrixData.MatrixData;
+import App.matrixData.task.Task;
 import App.result.Result;
 import App.threadWorkers.MatrixBrain;
 import App.threadWorkers.SystemExplorer;
 import App.threadWorkers.TaskCoordinator;
-import App.threadWorkers.tools.MatrixExtractor;
+import App.threadWorkers.pools.MatrixExtractor;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -60,7 +60,7 @@ public class App {
 
             if (line.isEmpty()) continue;
 
-            switch (tokens[0]) {//starter command
+            switch (tokens[0]) {
                 case "dir" -> {
                     System.out.println("dir");
                     if (badCommandLength(tokens.length, 2, 2)) continue;
@@ -98,17 +98,22 @@ public class App {
                 }
 
                 case "multiply" -> {
-                    System.out.println("multiply");
-//                    if (badCommandLength(tokens.length, 3)) continue;
+                    if (badCommandLength(tokens.length, 3, 6)) continue;
 
+                    boolean asyncFlag = false;
+                    String newName = "";
 
-                    if (tokens[1].equals("-async")) {
-                        System.out.println("async");
-                        //todo
-                    } else if (tokens[1].equals("-name")) {
-                        System.out.println("name");
-                        //todo
+                    if (!cashedMatrices.containsKey(tokens[1]) || !cashedMatrices.containsKey(tokens[2])){
+                        System.err.println("Nonexistent matrices");
+                        continue;
                     }
+
+                    for (int i = 3; i < tokens.length; i++) {
+                        if (Objects.equals(tokens[i], "-async")) asyncFlag = true;
+                        if (Objects.equals(tokens[i], "-name")) newName = tokens[i + 1];
+                    }
+
+
                 }
                 case "save" -> {
                     System.out.println("save");

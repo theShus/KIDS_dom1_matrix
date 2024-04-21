@@ -1,9 +1,10 @@
-package App.threadWorkers.tools;
+package App.threadWorkers.pools;
 
 import App.App;
 import App.PropertyStorage;
+import App.matrixData.SplitMatrix;
 import App.result.ScanResult;
-import App.threadWorkers.workers.MatrixScanWorker;
+import App.threadWorkers.pools.workers.MatrixScanWorker;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

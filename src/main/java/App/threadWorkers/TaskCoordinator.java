@@ -1,22 +1,12 @@
 package App.threadWorkers;
 
 import App.App;
-import App.matrixDat.task.MultiplyTask;
-import App.matrixDat.task.ScanTask;
-import App.matrixDat.task.Task;
-import App.matrixDat.task.TaskType;
-import App.result.ScanResult;
-import App.threadWorkers.tools.MatrixExtractor;
-import App.threadWorkers.tools.SplitMatrix;
-import App.threadWorkers.workers.MatrixScanWorker;
+import App.matrixData.task.MultiplyTask;
+import App.matrixData.task.ScanTask;
+import App.matrixData.task.Task;
+import App.matrixData.task.TaskType;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class TaskCoordinator extends Thread {
 
@@ -37,7 +27,7 @@ public class TaskCoordinator extends Thread {
                     App.matrixExtractor.sendMatrixForScanning(filePath);
                 }
                 else if (task.getTaskType() == TaskType.MULTIPLY) {
-                    App.logger.jobDispatcher("Submitted matrices for multiplication: " + ((MultiplyTask) task).getMatrix1().getName() + " * " + ((MultiplyTask) task).getMatrix2().getName());
+                    App.logger.jobDispatcher("Submitted matrices for multiplication: " + ((MultiplyTask) task).getMatrixData1().getName() + " * " + ((MultiplyTask) task).getMatrixData2().getName());
 
                     //todo pool submit
                 }

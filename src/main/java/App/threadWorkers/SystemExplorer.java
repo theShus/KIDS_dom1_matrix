@@ -2,7 +2,7 @@ package App.threadWorkers;
 
 import App.App;
 import App.PropertyStorage;
-import App.matrixDat.task.ScanTask;
+import App.matrixData.task.ScanTask;
 
 import java.io.File;
 import java.util.HashMap;

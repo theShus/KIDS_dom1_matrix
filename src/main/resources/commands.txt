@@ -1,0 +1,16 @@
+dir src/main/resources/matrix_data_test
+
+info C3
+info -all
+info -asc
+info -desc
+info -s 3
+info -e 3
+
+multiply
+
+save
+
+clear
+
+stop

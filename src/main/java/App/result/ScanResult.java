@@ -1,6 +1,6 @@
 package App.result;
 
-import App.matrixDat.task.TaskType;
+import App.matrixData.task.TaskType;
 
 import java.util.List;
 import java.util.Map;

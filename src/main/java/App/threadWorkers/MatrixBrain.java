@@ -1,8 +1,8 @@
 package App.threadWorkers;
 
 import App.App;
-import App.matrixDat.MatrixData;
-import App.matrixDat.task.TaskType;
+import App.matrixData.MatrixData;
+import App.matrixData.task.TaskType;
 import App.result.MultiplyResult;
 import App.result.Result;
 import App.result.ScanResult;
