@@ -2,7 +2,6 @@ package App;
 
 import App.logger.Logger;
 import App.matrixDat.MatrixData;
-import App.matrixDat.task.ScanTask;
 import App.matrixDat.task.Task;
 import App.result.Result;
 import App.threadWorkers.MatrixBrain;
@@ -10,12 +9,12 @@ import App.threadWorkers.SystemExplorer;
 import App.threadWorkers.TaskCoordinator;
 import App.threadWorkers.tools.MatrixExtractor;
 
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 public class App {
 
@@ -25,7 +24,7 @@ public class App {
     public static final BlockingQueue<Result> resultQueue = new LinkedBlockingQueue<>(100);
 
     //Results
-    public static final Map<String, MatrixData> scannedMatrices = new ConcurrentHashMap<>();
+    public static final Map<String, MatrixData> cashedMatrices = new ConcurrentHashMap<>();
     public static final Map<String, MatrixData> multipliedMatrices = new ConcurrentHashMap<>();
 
     //Else
@@ -43,8 +42,7 @@ public class App {
         PropertyStorage.getInstance().loadProperties();
         dirsToExplore.add(PropertyStorage.getInstance().getStart_dir());
 
-        systemExplorer.start(); //todo remove this below
-//        taskQueue.add(new ScanTask("C:\\Users\\Shus\\Programming\\IdeaProjects\\KIDS_matrix\\KIDS_matrix\\src\\main\\resources\\matrix_data\\c3_file.rix"));
+        systemExplorer.start();
         taskCoordinator.start();
         matrixBrain.start();
 
@@ -65,44 +63,43 @@ public class App {
             switch (tokens[0]) {//starter command
                 case "dir" -> {
                     System.out.println("dir");
-                    if (badCommandLength(tokens.length, 2)) continue;
-
-                    //todo  dirsToCrawl.add(tokens[1]);
+                    if (badCommandLength(tokens.length, 2, 2)) continue;
+                    dirsToExplore.add(tokens[1]);
                     logger.cli("Added directory to scan list");
                 }
                 case "info" -> {
-                    System.out.println("info");
+                    if (badCommandLength(tokens.length, 2, 4)) continue;
 
+                    if (tokens.length == 2) {
+                        switch (tokens[1]) {
+                            case "-all" -> printCashedMatrices();
+                            case "-asc" -> printAscDescMatrices(true);
+                            case "-desc" -> printAscDescMatrices(false);
+                            default -> {
+                                MatrixData matrixData;
+                                if (cashedMatrices.containsKey(tokens[1])) matrixData = cashedMatrices.get(tokens[1]);
+                                else {
+                                    System.err.println("Bad matrix name");
+                                    continue;
+                                }
+                                logger.cli("Matrix " + matrixData.getName() + ": | rows: " + matrixData.getRows() + " | columns: " + matrixData.getCols() + " | file path: " + matrixData.getFilePath());
+                            }
+                        }
+                    }
+                    else if (tokens.length == 3) {
+                        if (!isEntirelyInteger(tokens[2])){
+                            System.err.println("Bad number input");
+                            continue;
+                        }
 
-                    System.out.println(scannedMatrices.get("C3").getMatrix()[0][0]);
-
-//                    printMatrix(scannedMatrices.get("C3").getMatrix());
-
-
-
-//                    if (badCommandLength(tokens.length, 2)) continue;
-
-//                    if (tokens[1].equals("-all")) {
-//                        System.out.println("all");
-//                        //todo
-//                    } else if (tokens[1].equals("-asc")) {
-//                        System.out.println("asc");
-//                        //todo
-//                    } else if (tokens[1].equals("-desc")) {
-//                        System.out.println("desc");
-//                        //todo
-//                    } else if (tokens[1].equals("-s")) {
-//                        System.out.println("s");
-//                        //todo
-//                    } else if (tokens[1].equals("-e")) {
-//                        System.out.println("e");
-//                        //todo
-//                    }
+                        if (tokens[1].equals("-s")) printFirstLastMatrices(true, Integer.parseInt(tokens[2]));
+                        else if (tokens[1].equals("-e")) printFirstLastMatrices(false, Integer.parseInt(tokens[2]));
+                    }
                 }
 
                 case "multiply" -> {
                     System.out.println("multiply");
-                    if (badCommandLength(tokens.length, 3)) continue;
+//                    if (badCommandLength(tokens.length, 3)) continue;
 
 
                     if (tokens[1].equals("-async")) {
@@ -115,12 +112,12 @@ public class App {
                 }
                 case "save" -> {
                     System.out.println("save");
-                    if (badCommandLength(tokens.length, 2)) continue;
+//                    if (badCommandLength(tokens.length, 2)) continue;
 
                 }
                 case "clear" -> {
                     System.out.println("clear");
-                    if (badCommandLength(tokens.length, 2)) continue;
+//                    if (badCommandLength(tokens.length, 2)) continue;
 
                 }
                 case "help" -> logger.cli
@@ -153,22 +150,74 @@ public class App {
         }
     }
 
+//    public static void printMatrix(int[][] matrix) {
+//        for (int[] ints : matrix) {
+//            for (int anInt : ints) {
+//                System.out.print(anInt + " ");
+//            }
+//            System.out.println(); // Move to the next line after printing each row
+//        }
+//    }
 
-    public static void printMatrix(int[][] matrix) {
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                System.out.print(matrix[i][j] + " ");
-            }
-            System.out.println(); // Move to the next line after printing each row
-        }
-    }
-
-    private boolean badCommandLength(int tokenLength, int wantedSize) {
-        if (tokenLength > wantedSize - 1) {
-            System.err.println("Too many argument");
+    private boolean badCommandLength(int tokenLength, int minSize, int maxSize) {
+        if (tokenLength > maxSize || tokenLength < minSize){
+            System.err.println("Badly entered command");
             return true;
         }
         return false;
+    }
+
+    private void printCashedMatrices(){
+        for (Map.Entry<String, MatrixData> entry : cashedMatrices.entrySet()) {
+            logger.cli("Matrix " + entry.getValue().getName() + ": | rows: " +
+                    entry.getValue().getRows() + " | columns: " + entry.getValue().getCols() + " | file path: " + entry.getValue().getFilePath());
+        }
+    }
+
+    private void printAscDescMatrices(boolean asc){
+        List<MatrixData> sortedMatrices = sortMatrices(cashedMatrices);
+        if (asc){
+            for (MatrixData md: sortedMatrices) {
+                logger.cli("Matrix " + md.getName() + ": | rows: " + md.getRows() + " | columns: " + md.getCols() + " | file path: " + md.getFilePath());
+            }
+        }
+        else {
+            for (int i = sortedMatrices.size() - 1; i >= 0; i--) {
+                MatrixData md = sortedMatrices.get(i);
+                logger.cli("Matrix " + md.getName() + ": | rows: " + md.getRows() + " | columns: " + md.getCols() + " | file path: " + md.getFilePath());
+            }
+        }
+    }
+
+    public static List<MatrixData> sortMatrices(Map<String, MatrixData> matrixMap) {
+        return matrixMap.values().stream()
+                .sorted(Comparator.comparingInt(MatrixData::getRows)
+                        .thenComparingInt(MatrixData::getCols))
+                .collect(Collectors.toList());
+    }
+
+    private void printFirstLastMatrices(boolean first, int n){
+        int count = 0;
+        if (first) {//Pisi prvih n matrica
+            for (Map.Entry<String, MatrixData> entry : cashedMatrices.entrySet()) {
+                if (count++ == n || count == cashedMatrices.size()) break;
+                logger.cli("Matrix " + entry.getValue().getName() + ": | rows: " +
+                        entry.getValue().getRows() + " | columns: " + entry.getValue().getCols() + " | file path: " + entry.getValue().getFilePath());
+            }
+        }
+        else {//Pisi poslednjih n matrica
+            int start = cashedMatrices.size() - n;
+            if (start < 0) start = 0;  // In case n is larger than the map size
+            for (Map.Entry<String, MatrixData> entry : cashedMatrices.entrySet()) {
+                if (count++ < start) continue;
+                logger.cli("Matrix " + entry.getValue().getName() + ": | rows: " +
+                        entry.getValue().getRows() + " | columns: " + entry.getValue().getCols() + " | file path: " + entry.getValue().getFilePath());
+            }
+        }
+    }
+
+    private boolean isEntirelyInteger(String input) {
+        return input.matches("\\d+");
     }
 
     private void stopThreads() {

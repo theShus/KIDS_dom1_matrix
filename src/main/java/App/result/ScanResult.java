@@ -2,10 +2,8 @@ package App.result;
 
 import App.matrixDat.task.TaskType;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class ScanResult implements Result{
@@ -15,30 +13,14 @@ public class ScanResult implements Result{
     private final List<Future<Map<String, Integer>>> futureResults;
     private final int rows;
     private final int cols;
+    private final String filePath;
 
-    public ScanResult(String matrixName, List<Future<Map<String, Integer>>> futureResults, int rows, int cols) {
+    public ScanResult(String matrixName, List<Future<Map<String, Integer>>> futureResults, int rows, int cols, String filePath) {
         this.matrixName = matrixName;
         this.futureResults = futureResults;
         this.rows = rows;
         this.cols = cols;
-    }
-
-
-    public String getMatrixName() {
-        return matrixName;
-    }
-
-    @Override
-    public TaskType getScanType() {
-        return TaskType.CREATE;
-    }
-
-    public int getRows() {
-        return rows;
-    }
-
-    public int getCols() {
-        return cols;
+        this.filePath = filePath;
     }
 
     @Override
@@ -65,8 +47,6 @@ public class ScanResult implements Result{
         return null;
     }
 
-
-
     @Override
     public boolean futureIsDone() {
         for (Future<Map<String, Integer>> future : futureResults) {
@@ -77,4 +57,25 @@ public class ScanResult implements Result{
         return true;
     }
 
+
+    public String getMatrixName() {
+        return matrixName;
+    }
+
+    @Override
+    public TaskType getScanType() {
+        return TaskType.CREATE;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
 }

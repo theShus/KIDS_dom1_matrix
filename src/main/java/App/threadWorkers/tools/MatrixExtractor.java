@@ -38,7 +38,7 @@ public class MatrixExtractor {
 
         //add future scan results to result queue
         App.logger.jobDispatcher("Sent future results to queue");
-        App.resultQueue.add(new ScanResult(splitMatrix.getMatrixName(), matrixScanResults, splitMatrix.getRows(), splitMatrix.getCols()));
+        App.resultQueue.add(new ScanResult(splitMatrix.getMatrixName(), matrixScanResults, splitMatrix.getRows(), splitMatrix.getCols(), filePath));
     }
 
 

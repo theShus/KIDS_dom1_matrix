@@ -5,12 +5,14 @@ public class MatrixData {
     private int[][] matrix;
     private int rows;
     private int cols;
+    private final String filePath;
 
-    public MatrixData(String name, int[][] matrix, int rows, int cols) {
+    public MatrixData(String name, int[][] matrix, int rows, int cols, String filePath) {
         this.name = name;
         this.matrix = matrix;
         this.rows = rows;
         this.cols = cols;
+        this.filePath = filePath;
     }
 
     public String getName() {
@@ -43,5 +45,9 @@ public class MatrixData {
 
     public void setCols(int cols) {
         this.cols = cols;
+    }
+
+    public String getFilePath() {
+        return filePath;
     }
 }

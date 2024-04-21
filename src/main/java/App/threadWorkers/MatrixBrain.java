@@ -6,7 +6,6 @@ import App.matrixDat.task.TaskType;
 import App.result.MultiplyResult;
 import App.result.Result;
 import App.result.ScanResult;
-import jdk.swing.interop.SwingInterOpUtils;
 
 public class MatrixBrain extends Thread{
 
@@ -24,8 +23,8 @@ public class MatrixBrain extends Thread{
 
                     if (scanResult.futureIsDone()){
                         App.logger.resultRetrieverSorter("Matrix " + scanResult.getMatrixName() + " is finished scanning, adding to cache");
-                        MatrixData matrixData = new MatrixData(scanResult.getMatrixName(), scanResult.getResult(), scanResult.getRows(), scanResult.getCols());
-                        App.scannedMatrices.put(scanResult.getMatrixName(), matrixData);
+                        MatrixData matrixData = new MatrixData(scanResult.getMatrixName(), scanResult.getResult(), scanResult.getRows(), scanResult.getCols(), scanResult.getFilePath());
+                        App.cashedMatrices.put(scanResult.getMatrixName(), matrixData);
                     }
                     else App.resultQueue.add(result);
                 }
