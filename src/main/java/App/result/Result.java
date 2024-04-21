@@ -2,13 +2,11 @@ package App.result;
 
 import App.matrixData.task.TaskType;
 
-public interface Result {
+public interface Result <T> {
 
     TaskType getScanType();
 
-
-
-    int[][] getResult();
+    T getResult();
 
     boolean futureIsDone();
 }

@@ -1,9 +1,7 @@
-matrix_name=A1, rows=3, cols=3
+matrix_name=A1, rows=3, cols=2
 0,0 = 1
-0,2 = 1
+0,1 = 1
 1,0 = 1
 1,1 = 1
-1,2 = 1
 2,0 = 1
 2,1 = 1
-2,2 = 1

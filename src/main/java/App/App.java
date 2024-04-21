@@ -2,12 +2,14 @@ package App;
 
 import App.logger.Logger;
 import App.matrixData.MatrixData;
+import App.matrixData.task.MultiplyTask;
 import App.matrixData.task.Task;
 import App.result.Result;
 import App.threadWorkers.MatrixBrain;
 import App.threadWorkers.SystemExplorer;
 import App.threadWorkers.TaskCoordinator;
 import App.threadWorkers.pools.MatrixExtractor;
+import App.threadWorkers.pools.MatrixMultiplier;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -30,13 +32,15 @@ public class App {
     //Else
     private static final CopyOnWriteArrayList<String> dirsToExplore = new CopyOnWriteArrayList<>();
     public static final Logger logger = new Logger();
-    public static final MatrixExtractor matrixExtractor = new MatrixExtractor();
 
     //Threads
     private static final SystemExplorer systemExplorer = new SystemExplorer(dirsToExplore);
     private static final TaskCoordinator taskCoordinator = new TaskCoordinator();
     private static final MatrixBrain matrixBrain = new MatrixBrain();
-    //todo matrix multiplier
+
+    //Pools
+    public static final MatrixExtractor matrixExtractor = new MatrixExtractor();
+    public static final MatrixMultiplier matrixMultiplier = new MatrixMultiplier();
 
     public void start() {
         PropertyStorage.getInstance().loadProperties();
@@ -113,12 +117,23 @@ public class App {
                         if (Objects.equals(tokens[i], "-name")) newName = tokens[i + 1];
                     }
 
+                    MultiplyTask multiplyTask = new MultiplyTask(
+                            cashedMatrices.get(tokens[1]),
+                            cashedMatrices.get(tokens[2]),
+                            newName
+                    );
+
+                    if (asyncFlag) matrixMultiplier.multiplyMatricesAsync(multiplyTask);
+                    else matrixMultiplier.multiplyMatricesBlocking(multiplyTask);
 
                 }
                 case "save" -> {
                     System.out.println("save");
 //                    if (badCommandLength(tokens.length, 2)) continue;
 
+                }
+                case "print" -> {
+                    printMatrix(cashedMatrices.get(tokens[1]).getMatrix());
                 }
                 case "clear" -> {
                     System.out.println("clear");
@@ -129,19 +144,20 @@ public class App {
                         (
                                 """
                                         --> dir <dir_name>:  Dodaje novi direktorijum za skeniranje
-                                        --> info <matrix_name>:  Dohvata osnovne informacije o specifičnoj matrici ili skupu matrica\040
+                                        --> print <dir_name>:  Ispisivanje matrice
+                                        --> info <matrix_name>:  Dohvata osnovne informacije o specifičnoj matrici ili skupu matrica
                                           ->  -all: Prikazuje sve matrice (koristi se bez arguments za naziv matrice).
                                           ->  -asc: Sortira matrice rastuće po broju redova, a zatim po broju kolona.
                                           ->  -desc: Sortira matrice opadajuće po broju redova, a zatim po broju kolona.
                                           ->  -s <n>: Prikazuje prvih N matrica. Na primer, -s 10 prikazuje prvih 10 matrica.
                                           ->  -e <n>: Prikazuje poslednjih N matrica. Na primer, -e 5 prikazuje poslednjih 5 matrica.
-                                        --> multiply <mat1,mat2>:  Korisnik  zatraži množenje dve matrice\040
-                                          ->    -async: Omogućava asinhrono izvršavanje množenja, bez blokiranja Matrix Brain niti.
-                                          ->    -name <matrix_name>: Omogućava imenovanje matrice, ukoliko se ne navede kao parametar ime koje matrica koristi je konkatenacija naziva prve i druge matrice, primer: mat1mat2
+                                        --> multiply <mat1,mat2>:  Korisnik  zatraži množenje dve matrice
+                                          ->  -async: Omogućava asinhrono izvršavanje množenja, bez blokiranja Matrix Brain niti.
+                                          ->  -name <matrix_name>: Omogućava imenovanje matrice, ukoliko se ne navede kao parametar ime koje matrica koristi je konkatenacija naziva prve i druge matrice, primer: mat1mat2
                                         --> save -name <mat_name> -file <file_name>:  Omogućava korisniku da sačuva matricu na disk
-                                        --> clear <mat_name> : Brisu se rezultati zeljene matrice
+                                        --> clear <mat_name>: Brisu se rezultati zeljene matrice
                                         --> clear <file_name>: Brisu se sve matrice sa upisanog fajla i kupe se opet (automatski)
-                                        --> stop : Gasi aplikaciju
+                                        --> stop: Gasi aplikaciju
                                         """
                         );
                 case "stop" -> {
@@ -155,14 +171,14 @@ public class App {
         }
     }
 
-//    public static void printMatrix(int[][] matrix) {
-//        for (int[] ints : matrix) {
-//            for (int anInt : ints) {
-//                System.out.print(anInt + " ");
-//            }
-//            System.out.println(); // Move to the next line after printing each row
-//        }
-//    }
+    public static void printMatrix(int[][] matrix) {
+        for (int[] ints : matrix) {
+            for (int anInt : ints) {
+                System.out.print(anInt + " ");
+            }
+            System.out.println(); // Move to the next line after printing each row
+        }
+    }
 
     private boolean badCommandLength(int tokenLength, int minSize, int maxSize) {
         if (tokenLength > maxSize || tokenLength < minSize){
@@ -231,6 +247,8 @@ public class App {
         systemExplorer.terminate();
         taskCoordinator.terminate();
         matrixBrain.terminate();
+        matrixExtractor.terminatePool();
+        matrixMultiplier.terminatePool();
     }
 
 }

@@ -15,6 +15,14 @@ public class MatrixData {
         this.filePath = filePath;
     }
 
+    public MatrixData(MatrixData matrixData) {
+        this.name = matrixData.getName();
+        this.matrix = matrixData.getMatrix();
+        this.rows = matrixData.getRows();
+        this.cols = matrixData.getCols();
+        this.filePath = matrixData.getFilePath();
+    }
+
     public String getName() {
         return name;
     }

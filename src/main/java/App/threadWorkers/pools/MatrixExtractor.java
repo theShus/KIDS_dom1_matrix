@@ -2,10 +2,12 @@ package App.threadWorkers.pools;
 
 import App.App;
 import App.PropertyStorage;
+import App.matrixData.MatrixData;
 import App.matrixData.SplitMatrix;
 import App.result.ScanResult;
+import App.result.SquareResult;
 import App.threadWorkers.pools.workers.MatrixScanWorker;
-
+import App.threadWorkers.pools.workers.MatrixSquareWorker;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -18,11 +20,18 @@ import java.util.concurrent.Future;
 
 public class MatrixExtractor {
 
-    private final ExecutorCompletionService<Map<String, Integer>> completionService;
+    private final ExecutorService threadPool;
+    private final ExecutorCompletionService<Map<String, Integer>> extractCompletionService;
+
+    private final ExecutorService sThreadPool;
+    private final ExecutorCompletionService<MatrixData> squareCompletionService;
+
 
     public MatrixExtractor() {
-        ExecutorService threadPool = Executors.newCachedThreadPool();
-        this.completionService = new ExecutorCompletionService<>(threadPool);
+        this.threadPool = Executors.newCachedThreadPool();
+        this.extractCompletionService = new ExecutorCompletionService<>(threadPool);
+        this.sThreadPool = Executors.newCachedThreadPool();
+        this.squareCompletionService = new ExecutorCompletionService<>(threadPool);
     }
 
     public void sendMatrixForScanning(String filePath) throws IOException {
@@ -34,7 +43,7 @@ public class MatrixExtractor {
         for (long[] segment : splitMatrix.getSegments()) {
             long start = segment[0];
             long end = segment[1];
-            matrixScanResults.add(this.completionService.submit(new MatrixScanWorker(filePath, start, end)));
+            matrixScanResults.add(this.extractCompletionService.submit(new MatrixScanWorker(filePath, start, end)));
         }
 
         //add future scan results to result queue
@@ -48,7 +57,7 @@ public class MatrixExtractor {
      ako se granica ne nalazi na \n (kraju linije) idemo unazad (da ne bi bilo vise od max size) dok ne dodjemo do kraja reda
      zatim to napravimo u segment
      */
-    public SplitMatrix calculateSegments(String filePath) throws IOException {
+    private SplitMatrix calculateSegments(String filePath) throws IOException {
         RandomAccessFile file = new RandomAccessFile(filePath, "r");
 
         String firstLine = file.readLine(); // Uzmemo podatke iz prve linije
@@ -79,13 +88,21 @@ public class MatrixExtractor {
                     file.seek(segmentEnd);
                 }
             }
-
             segments.add(new long[]{segmentStart, segmentEnd});//dodaj granice segmenta
             currentOffset = segmentEnd ;
         }
 
         file.close();
         return new SplitMatrix(matrixName, segments, rows, cols);//vracamo u klasi kako bi lakse vradili metadata
+    }
+
+    public void squareMatrix(String matrixName){
+        App.resultQueue.add(new SquareResult(this.squareCompletionService.submit(new MatrixSquareWorker(matrixName))));
+    }
+
+    public void terminatePool(){
+        threadPool.shutdown();
+        sThreadPool.shutdown();
     }
 
 }

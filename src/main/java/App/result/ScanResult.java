@@ -1,12 +1,14 @@
 package App.result;
 
 import App.matrixData.task.TaskType;
+import jdk.swing.interop.SwingInterOpUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-public class ScanResult implements Result{
+public class ScanResult implements Result<int[][]>{
 
 
     private final String matrixName;
@@ -56,7 +58,6 @@ public class ScanResult implements Result{
         }
         return true;
     }
-
 
     public String getMatrixName() {
         return matrixName;
