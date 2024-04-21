@@ -15,6 +15,15 @@ public class MultiplyTask implements Task{
     }
 
     @Override
+    public String toString() {
+        return "MultiplyTask{" +
+                "matrixData1=" + matrixData1 +
+                ", matrixData2=" + matrixData2 +
+                ", newName='" + newName + '\'' +
+                '}';
+    }
+
+    @Override
     public TaskType getTaskType() {
         return TaskType.MULTIPLY;
     }

@@ -29,7 +29,7 @@ public class MatrixMultiplier {
         String newName;
         int[][] result = multiplyMatrices(multiplyTask.getMatrixData1(), multiplyTask.getMatrixData2());
 
-        if (Objects.equals(multiplyTask.getNewName(), ""))
+        if (Objects.equals(multiplyTask.getNewName(), ""))//ako nema custom ime samo cemo da spojimo imena matrica
             newName = multiplyTask.getMatrixData1().getName() + multiplyTask.getMatrixData2().getName();
         else newName = multiplyTask.getNewName();
 
@@ -42,17 +42,44 @@ public class MatrixMultiplier {
         ));
     }
 
-    //todo check
-    private int[][] multiplyMatrices(MatrixData matrixData1, MatrixData matrixData2){
-        int[][] result = new int[matrixData1.getRows()][matrixData2.getCols()];
-        for (int i = 0; i < matrixData1.getRows(); i++) {
-            for (int j = 0; j < matrixData2.getCols(); j++) {
-                for (int k = 0; k < matrixData1.getCols(); k++) { // or matrixData2.getRows(), they are equal
-                    result[i][j] += matrixData1.getMatrix()[i][k] * matrixData2.getMatrix()[k][j];
+    private int[][] multiplyMatrices(MatrixData matrixData1, MatrixData matrixData2) {
+        MatrixData firstMatrix = matrixData1;
+        MatrixData secondMatrix = matrixData2;
+
+        //Orjentisemo matrice tako da se poklope za mnozenje
+        if (matrixData1.getCols() != matrixData2.getRows() && matrixData2.getCols() < matrixData1.getRows()) {
+            firstMatrix = matrixData2;
+            secondMatrix = matrixData1;
+        }
+        else if (matrixData1.getCols() != matrixData2.getRows()) //ako dimenzije nisu kompatabilne
+            System.err.println("Cannot multiply matrices: incompatible dimensions.");
+
+        int[][] mat1 = firstMatrix.getMatrix();
+        int[][] mat2 = secondMatrix.getMatrix();
+
+
+        //Mnozimo matrice
+        int[][] result = new int[firstMatrix.getRows()][secondMatrix.getCols()];
+        for (int i = 0; i < firstMatrix.getRows(); i++) {
+            for (int j = 0; j < secondMatrix.getCols(); j++) {
+                for (int k = 0; k < firstMatrix.getCols(); k++) {
+                    result[i][j] += mat1[i][k] * mat2[k][j];
                 }
             }
         }
+
+        printMatrix(result);
+
         return result;
+    }
+
+    public static void printMatrix(int[][] matrix) {
+        for (int[] ints : matrix) {
+            for (int anInt : ints) {
+                System.out.print(anInt + " ");
+            }
+            System.out.println(); // Move to the next line after printing each row
+        }
     }
 
     public void terminatePool(){

@@ -101,14 +101,14 @@ public class App {
                     }
                 }
 
-                case "multiply" -> {
+                case "mult" -> {
                     if (badCommandLength(tokens.length, 3, 6)) continue;
 
                     boolean asyncFlag = false;
                     String newName = "";
 
                     if (!cashedMatrices.containsKey(tokens[1]) || !cashedMatrices.containsKey(tokens[2])){
-                        System.err.println("Nonexistent matrices");
+                        System.err.println("One of the matrices is nonexistent");
                         continue;
                     }
 
@@ -127,15 +127,13 @@ public class App {
                     else matrixMultiplier.multiplyMatricesBlocking(multiplyTask);
 
                 }
-                case "save" -> {
+                case "save" -> {//todo
                     System.out.println("save");
 //                    if (badCommandLength(tokens.length, 2)) continue;
 
                 }
-                case "print" -> {
-                    printMatrix(cashedMatrices.get(tokens[1]).getMatrix());
-                }
-                case "clear" -> {
+                case "print" -> printMatrix(cashedMatrices.get(tokens[1]).getMatrix());
+                case "clear" -> {//todo
                     System.out.println("clear");
 //                    if (badCommandLength(tokens.length, 2)) continue;
 
@@ -151,7 +149,7 @@ public class App {
                                           ->  -desc: Sortira matrice opadajuće po broju redova, a zatim po broju kolona.
                                           ->  -s <n>: Prikazuje prvih N matrica. Na primer, -s 10 prikazuje prvih 10 matrica.
                                           ->  -e <n>: Prikazuje poslednjih N matrica. Na primer, -e 5 prikazuje poslednjih 5 matrica.
-                                        --> multiply <mat1,mat2>:  Korisnik  zatraži množenje dve matrice
+                                        --> mult <mat1 mat2>:  Korisnik  zatraži množenje dve matrice
                                           ->  -async: Omogućava asinhrono izvršavanje množenja, bez blokiranja Matrix Brain niti.
                                           ->  -name <matrix_name>: Omogućava imenovanje matrice, ukoliko se ne navede kao parametar ime koje matrica koristi je konkatenacija naziva prve i druge matrice, primer: mat1mat2
                                         --> save -name <mat_name> -file <file_name>:  Omogućava korisniku da sačuva matricu na disk
@@ -182,7 +180,7 @@ public class App {
 
     private boolean badCommandLength(int tokenLength, int minSize, int maxSize) {
         if (tokenLength > maxSize || tokenLength < minSize){
-            System.err.println("Badly entered command");
+            System.err.println("Wrong number of arguments");
             return true;
         }
         return false;

@@ -1,5 +1,7 @@
 package App.matrixData;
 
+import java.util.Arrays;
+
 public class MatrixData {
     private String name;
     private int[][] matrix;
@@ -61,5 +63,15 @@ public class MatrixData {
 
     public String getFilePath() {
         return filePath;
+    }
+
+    @Override
+    public String toString() {
+        return "MatrixData{" +
+                "name='" + name + '\'' +
+                ", rows=" + rows +
+                ", cols=" + cols +
+                ", filePath='" + filePath + '\'' +
+                '}';
     }
 }
