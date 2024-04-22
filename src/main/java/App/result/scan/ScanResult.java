@@ -1,6 +1,7 @@
-package App.result;
+package App.result.scan;
 
 import App.matrixData.task.TaskType;
+import App.result.Result;
 import jdk.swing.interop.SwingInterOpUtils;
 
 import java.util.Arrays;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-public class ScanResult implements Result<int[][]>{
+public class ScanResult implements Result<int[][]> {
 
 
     private final String matrixName;

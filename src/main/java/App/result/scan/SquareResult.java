@@ -1,12 +1,13 @@
-package App.result;
+package App.result.scan;
 
 import App.matrixData.MatrixData;
 import App.matrixData.task.TaskType;
+import App.result.Result;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-public class SquareResult implements Result<MatrixData>{
+public class SquareResult implements Result<MatrixData> {
 
     private final Future<MatrixData> squaredMatrixData;
 

@@ -34,7 +34,8 @@ public class MatrixScanWorker implements Callable<Map<String, Integer>> {
                 String[] parts = line.split(" = ");
 
                 if (parts.length != 2) {
-                    System.err.println("skipped malformed line");
+                    System.err.println("skipped malformed line in matrix " + filePath);
+
                     continue;
                 }
 

@@ -4,10 +4,10 @@ import App.App;
 import App.matrixData.MatrixData;
 import App.matrixData.task.SquareTask;
 import App.matrixData.task.TaskType;
-import App.result.MultiplyResult;
+import App.result.multiply.MultiplyResult;
 import App.result.Result;
-import App.result.ScanResult;
-import App.result.SquareResult;
+import App.result.scan.ScanResult;
+import App.result.scan.SquareResult;
 
 public class MatrixBrain extends Thread{
 
@@ -21,7 +21,6 @@ public class MatrixBrain extends Thread{
 
                 if (result.getScanType() == TaskType.CREATE) {
                     ScanResult scanResult = (ScanResult) result;
-
                     if (scanResult.futureIsDone()){
                         App.logger.resultRetrieverSorter("Matrix " + scanResult.getMatrixName() + " is finished scanning, adding to cache");
                         MatrixData matrixData = new MatrixData(scanResult.getMatrixName(), scanResult.getResult(), scanResult.getRows(), scanResult.getCols(), scanResult.getFilePath());
@@ -37,8 +36,15 @@ public class MatrixBrain extends Thread{
                     App.cashedMatrices.put(squaredMatrixData.getName(), squaredMatrixData);
                 }
                 else if (result.getScanType() == TaskType.MULTIPLY) {
-                    MultiplyResult scanResult = (MultiplyResult) result;
-//                    App.logger.resultRetrieverSorter("Matrix " + scanResult.getMatrixName() + " is finished scanning, adding to cache");
+                    MultiplyResult multiplyResult = (MultiplyResult) result;
+                    System.out.println("got mult res " + multiplyResult.getMatrixName());
+                    if (multiplyResult.futureIsDone()){
+                        System.out.println("IT IS DONE");
+                        App.logger.resultRetrieverSorter("Matrix " + multiplyResult.getMatrixName() + " is finished scanning, adding to cache");
+
+                        printMatrix(multiplyResult.getResult());
+                    }
+                    else App.resultQueue.add(result);
                 }
 
             } catch (InterruptedException e) {
@@ -47,6 +53,15 @@ public class MatrixBrain extends Thread{
         }
     }
 
+
+    public static void printMatrix(int[][] matrix) {
+        for (int[] ints : matrix) {
+            for (int anInt : ints) {
+                System.out.print(anInt + " ");
+            }
+            System.out.println(); // Move to the next line after printing each row
+        }
+    }
 
 
     public void terminate() {
