@@ -33,7 +33,7 @@ public class MatrixMultiplier {
             newName = multiplyTask.getMatrixData1().getName() + multiplyTask.getMatrixData2().getName();
         else newName = multiplyTask.getNewName();
 
-        App.multipliedMatrices.put(newName, new MatrixData(
+        App.cashedMatrices.put(newName, new MatrixData(
                 newName,
                 result,
                 multiplyTask.getMatrixData1().getRows(),
@@ -47,16 +47,17 @@ public class MatrixMultiplier {
         MatrixData secondMatrix = matrixData2;
 
         //Orjentisemo matrice tako da se poklope za mnozenje
-        if (matrixData1.getCols() != matrixData2.getRows() && matrixData2.getCols() < matrixData1.getRows()) {
+        if (matrixData1.getCols() != matrixData2.getRows() || matrixData2.getCols() != matrixData1.getRows()) {
+            System.err.println("Matrices can not be multiplied (row/col dont match)");
+            return null;
+        }
+        else if (matrixData1.getRows() > matrixData1.getCols()) {
             firstMatrix = matrixData2;
             secondMatrix = matrixData1;
         }
-        else if (matrixData1.getCols() != matrixData2.getRows()) //ako dimenzije nisu kompatabilne
-            System.err.println("Cannot multiply matrices: incompatible dimensions.");
 
         int[][] mat1 = firstMatrix.getMatrix();
         int[][] mat2 = secondMatrix.getMatrix();
-
 
         //Mnozimo matrice
         int[][] result = new int[firstMatrix.getRows()][secondMatrix.getCols()];
@@ -67,9 +68,7 @@ public class MatrixMultiplier {
                 }
             }
         }
-
-        printMatrix(result);
-
+//        printMatrix(result);
         return result;
     }
 
