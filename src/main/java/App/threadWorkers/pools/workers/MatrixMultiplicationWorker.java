@@ -21,19 +21,15 @@ public class MatrixMultiplicationWorker implements Callable<SubMultiplyResult> {
     }
 
     @Override
-    public SubMultiplyResult call() throws Exception {
-        int numRows = rows.size();
-        int numCols = cols.size();
-
-
-        int[][] resultMatrix = new int[numRows][numCols];
+    public SubMultiplyResult call(){
+        int[][] resultMatrix = new int[rows.size()][cols.size()];
 
         // Iterate through each row
-        for (int i = 0; i < numRows; i++) {
+        for (int i = 0; i < rows.size(); i++) {
             int[] currentRow = rows.get(i);
 
             // Iterate through each column
-            for (int j = 0; j < numCols; j++) {
+            for (int j = 0; j < cols.size(); j++) {
                 int[] currentCol = cols.get(j);
                 int sum = 0;
 
@@ -46,19 +42,6 @@ public class MatrixMultiplicationWorker implements Callable<SubMultiplyResult> {
                 resultMatrix[i][j] = sum;
             }
         }
-//        printMatrix(resultMatrix);
-
         return new SubMultiplyResult(cordX, cordY, resultMatrix);
-    }
-
-    public static void printMatrix(int[][] matrix) {
-        System.out.println("------");
-
-        for (int[] ints : matrix) {
-            for (int anInt : ints) {
-                System.out.print(anInt + " ");
-            }
-            System.out.println(); // Move to the next line after printing each row
-        }
     }
 }

@@ -127,7 +127,7 @@ public class App {
                     else matrixMultiplier.multiplyMatricesBlocking(multiplyTask);
 
                 }
-                case "save" -> {//todo
+                case "save" -> {
                     System.out.println("save");
 //                    if (badCommandLength(tokens.length, 2)) continue;
 

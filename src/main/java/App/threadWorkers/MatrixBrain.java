@@ -53,17 +53,6 @@ public class MatrixBrain extends Thread{
         }
     }
 
-
-    public static void printMatrix(int[][] matrix) {
-        for (int[] ints : matrix) {
-            for (int anInt : ints) {
-                System.out.print(anInt + " ");
-            }
-            System.out.println(); // Move to the next line after printing each row
-        }
-    }
-
-
     public void terminate() {
         System.err.println("Terminating MatrixBrain thread");
         running = false;

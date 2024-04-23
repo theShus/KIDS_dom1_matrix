@@ -40,7 +40,7 @@ public class MatrixMultiplier {
         MatrixData secondMatrix = multiplyTask.getMatrixData2();
         if (firstMatrix.getCols() != secondMatrix.getRows() || secondMatrix.getCols() != firstMatrix.getRows()) {
             System.err.println("Matrices can not be multiplied (row/col dont match)");
-//            return;
+            return;
         }
         else if (firstMatrix.getRows() > firstMatrix.getCols()) {//okrecemo jer hocemo da matrica sa manje redova bude levo (tako podeseni for-ovi ispod)
             firstMatrix = multiplyTask.getMatrixData2();
@@ -51,38 +51,21 @@ public class MatrixMultiplier {
         List<int[]> subMatricesARow = extractRowsAsArrays(firstMatrix.getMatrix());
         List<int[]> subMatricesBColumns = extractColumnsAsArrays(secondMatrix.getMatrix());
 
-
-//        System.out.println("ROWW");
-//        for (int[] a: subMatricesARow) {
-//            System.out.println("---");
-//            System.out.println(Arrays.toString(a));
-//        }
-//        System.out.println("Columns");
-//        for (int[] b: subMatricesBColumns) {
-//            System.out.println("---");
-//            System.out.println(Arrays.toString(b));
-//        }
-
         if (subMatricesARow.size() != subMatricesBColumns.size()){
             System.err.println("Matrices have malformed while splitting, exiting");
             return;
         }
         //posalje se podeljeno u workere
         List<Future<SubMultiplyResult>> matrixMultiplyResults = new ArrayList<>();
-
         for (int rowCounter = 0; rowCounter < subMatricesARow.size(); rowCounter += MAXIMUM_ROWS_SIZE) {
             for (int colCounter = 0; colCounter < subMatricesBColumns.size(); colCounter += MAXIMUM_ROWS_SIZE) {
-
                 List<int[]> rowsForWorker = new ArrayList<>();
                 List<int[]> colsForWorker = new ArrayList<>();
-
                 for (int i = 0; i < MAXIMUM_ROWS_SIZE; i++) {
                     rowsForWorker.add(subMatricesARow.get(rowCounter + i));
                     colsForWorker.add(subMatricesBColumns.get(colCounter + i));
                 }
-
                 matrixMultiplyResults.add(this.completionService.submit(new MatrixMultiplicationWorker(rowCounter , colCounter , rowsForWorker, colsForWorker)));
-
             }
         }
 
@@ -118,17 +101,6 @@ public class MatrixMultiplier {
         }
         return columnList;
     }
-
-    public static void printMatrix(int[][] matrix) {
-        for (int[] ints : matrix) {
-            for (int anInt : ints) {
-                System.out.print(anInt + " ");
-            }
-            System.out.println(); // Move to the next line after printing each row
-        }
-    }
-
-
 
     //BLOCKING
 
