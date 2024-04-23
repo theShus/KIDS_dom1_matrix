@@ -6,12 +6,27 @@ import App.matrixData.task.SquareTask;
 import App.matrixData.task.TaskType;
 import App.result.multiply.MultiplyResult;
 import App.result.Result;
+import App.result.multiply.SubMultiplyResult;
 import App.result.scan.ScanResult;
 import App.result.scan.SquareResult;
+import App.threadWorkers.pools.workers.MatrixFileWriter;
+
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MatrixBrain extends Thread{
 
     private boolean running = true;
+
+//    private final ExecutorService threadPool;
+//    private final ExecutorCompletionService completionService;//todo change pool
+//    public MatrixBrain() {
+//        threadPool = Executors.newCachedThreadPool();
+//        this.completionService = new ExecutorCompletionService<>(threadPool);
+//    }
+
+    ExecutorService fileWriterThreadPool = Executors.newWorkStealingPool();
 
     @Override
     public void run() {
@@ -38,7 +53,7 @@ public class MatrixBrain extends Thread{
                 else if (result.getScanType() == TaskType.MULTIPLY) {
                     MultiplyResult multiplyResult = (MultiplyResult) result;
                     if (multiplyResult.futureIsDone()){
-                        App.logger.resultRetrieverSorter("Matrix " + multiplyResult.getMatrixName() + " is finished scanning, adding to cache");
+                        App.logger.resultRetrieverSorter("Matrix " + multiplyResult.getMatrixName() + " is finished multiplying, adding to cache");
                         App.cashedMatrices.put(multiplyResult.getMatrixName(),
                                 new MatrixData(multiplyResult.getMatrixName(), multiplyResult.getResult(), multiplyResult.getRows(), multiplyResult.getCols(), "-"));
 
@@ -53,8 +68,14 @@ public class MatrixBrain extends Thread{
         }
     }
 
+
+    public void saveMatrixToFile(MatrixData matrixData, String matName, String fileName){
+       fileWriterThreadPool.submit(new MatrixFileWriter(matrixData, matName, fileName));
+    }
+
     public void terminate() {
         System.err.println("Terminating MatrixBrain thread");
         running = false;
+        fileWriterThreadPool.shutdown();
     }
 }

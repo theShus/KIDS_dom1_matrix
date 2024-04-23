@@ -1,7 +1,5 @@
 package App.logger;
 
-import javax.swing.table.TableRowSorter;
-
 public class Logger {
 
     //Standard
@@ -19,7 +17,7 @@ public class Logger {
 
     //Results
     private static final boolean resultRetrieverSorter = true;
-    private static final boolean resultRetriever = true;
+    private static final boolean fileWriter = true;
 
 
 
@@ -48,20 +46,12 @@ public class Logger {
         System.out.println(Color.GREEN + message + Color.RESET);
     }
 
-    public void resultRetriever(String message){
-        if (!resultRetriever) return;
+    public void fileWriter(String message){
+        if (!fileWriter) return;
         System.out.println(Color.MAGENTA + message + Color.RESET);
     }
 
-    public void fileScanner(String message){
-        if (!fileScanner) return;
-        System.out.println(Color.BLUE + message + Color.RESET);
-    }
 
-    public void webScanner(String message){
-        if (!webScanner) return;
-        System.out.println(Color.BLUE + message + Color.RESET);
-    }
 
     public void propertyStorage(String message){
         if (!propertyStorage) return;

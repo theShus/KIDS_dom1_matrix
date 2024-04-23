@@ -45,6 +45,7 @@ public class App {
     public void start() {
         PropertyStorage.getInstance().loadProperties();
         dirsToExplore.add(PropertyStorage.getInstance().getStart_dir());
+        matrixMultiplier.setRowSize();
 
         systemExplorer.start();
         taskCoordinator.start();
@@ -125,11 +126,24 @@ public class App {
 
                     if (asyncFlag) matrixMultiplier.multiplyMatricesAsync(multiplyTask);
                     else matrixMultiplier.multiplyMatricesBlocking(multiplyTask);
-
                 }
                 case "save" -> {
-                    System.out.println("save");
-//                    if (badCommandLength(tokens.length, 2)) continue;
+                    if (badCommandLength(tokens.length, 3, 5)) continue;
+
+                    String matName = "";
+                    String fileName = "";
+
+                    for (int i = 1; i < tokens.length; i++) {
+                        if (Objects.equals(tokens[i], "-name")) matName = tokens[i + 1];
+                        if (Objects.equals(tokens[i], "-file")) fileName = tokens[i + 1];
+                    }
+
+                    if (!cashedMatrices.containsKey(matName)){
+                        System.err.println("Requested matrix is nonexistent");
+                        continue;
+                    }
+
+                    matrixBrain.saveMatrixToFile(cashedMatrices.get(matName), matName, fileName);
 
                 }
                 case "print" -> {

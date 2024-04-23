@@ -19,8 +19,7 @@ public class MatrixMultiplier {
 
     private final ExecutorService threadPool;
     private final ExecutorCompletionService<SubMultiplyResult> completionService;//todo change pool
-//    private static final int MAXIMUM_ROWS_SIZE = PropertyStorage.getInstance().getMaximum_rows_size();
-    private static final int MAXIMUM_ROWS_SIZE = 2;
+    private static int MAXIMUM_ROWS_SIZE;
 
     public MatrixMultiplier() {
         threadPool = Executors.newCachedThreadPool();
@@ -59,8 +58,21 @@ public class MatrixMultiplier {
         List<Future<SubMultiplyResult>> matrixMultiplyResults = new ArrayList<>();
         for (int rowCounter = 0; rowCounter < subMatricesARow.size(); rowCounter += MAXIMUM_ROWS_SIZE) {
             for (int colCounter = 0; colCounter < subMatricesBColumns.size(); colCounter += MAXIMUM_ROWS_SIZE) {
+
                 List<int[]> rowsForWorker = new ArrayList<>();
                 List<int[]> colsForWorker = new ArrayList<>();
+
+                if (rowCounter == subMatricesARow.size()-1) continue;
+                if (colCounter == subMatricesARow.size()-1) continue;
+
+                System.out.println("--------");
+                System.out.println(subMatricesARow.size());
+                System.out.println(subMatricesBColumns.size());
+                System.out.println("AAA");
+                System.out.println(rowCounter);
+                System.out.println(colCounter);
+
+
                 for (int i = 0; i < MAXIMUM_ROWS_SIZE; i++) {
                     rowsForWorker.add(subMatricesARow.get(rowCounter + i));
                     colsForWorker.add(subMatricesBColumns.get(colCounter + i));
@@ -147,6 +159,11 @@ public class MatrixMultiplier {
             }
         }
         return result;
+    }
+
+    public void setRowSize(){
+        MAXIMUM_ROWS_SIZE = PropertyStorage.getInstance().getMaximum_rows_size();
+        System.out.println(MAXIMUM_ROWS_SIZE);
     }
 
     public void terminatePool(){
