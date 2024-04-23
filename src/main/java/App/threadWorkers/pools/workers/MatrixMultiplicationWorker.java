@@ -2,37 +2,63 @@ package App.threadWorkers.pools.workers;
 
 import App.result.multiply.SubMultiplyResult;
 
+import java.util.List;
 import java.util.concurrent.Callable;
+
 
 public class MatrixMultiplicationWorker implements Callable<SubMultiplyResult> {
 
     private final int cordX;
     private final int cordY;
-    private final int[][] mat1;
-    private final int[][] mat2;
+    private final List<int[]> rows;
+    private final List<int[]> cols;
 
-    public MatrixMultiplicationWorker(int cordX, int cordY, int[][] mat1, int[][] mat2) {
+    public MatrixMultiplicationWorker(int cordX, int cordY, List<int[]> rows, List<int[]> cols) {
         this.cordX = cordX;
         this.cordY = cordY;
-        this.mat1 = mat1;
-        this.mat2 = mat2;
+        this.rows = rows;
+        this.cols = cols;
     }
 
     @Override
     public SubMultiplyResult call() throws Exception {
-        int mat1Rows = mat1.length;
-        int mat2Cols = mat2[0].length;
+        int numRows = rows.size();
+        int numCols = cols.size();
 
-        int[][] result = new int[mat1Rows][mat2Cols];
-        for (int i = 0; i < mat1Rows; i++) {
-            for (int j = 0; j < mat2Cols; j++) {
-                for (int k = 0; k < mat2Cols; k++) {
-                    result[i][j] += mat1[i][k] * mat2[k][j];
+
+        int[][] resultMatrix = new int[numRows][numCols];
+
+        // Iterate through each row
+        for (int i = 0; i < numRows; i++) {
+            int[] currentRow = rows.get(i);
+
+            // Iterate through each column
+            for (int j = 0; j < numCols; j++) {
+                int[] currentCol = cols.get(j);
+                int sum = 0;
+
+                // Multiply corresponding elements and add them
+                for (int k = 0; k < currentRow.length; k++) {
+                    sum += currentRow[k] * currentCol[k];
                 }
+
+                // Store the result in the matrix
+                resultMatrix[i][j] = sum;
             }
         }
+//        printMatrix(resultMatrix);
 
-        return new SubMultiplyResult(cordX, cordY, result);
+        return new SubMultiplyResult(cordX, cordY, resultMatrix);
     }
 
+    public static void printMatrix(int[][] matrix) {
+        System.out.println("------");
+
+        for (int[] ints : matrix) {
+            for (int anInt : ints) {
+                System.out.print(anInt + " ");
+            }
+            System.out.println(); // Move to the next line after printing each row
+        }
+    }
 }

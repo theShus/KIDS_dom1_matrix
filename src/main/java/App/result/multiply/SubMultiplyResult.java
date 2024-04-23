@@ -4,9 +4,9 @@ import java.util.concurrent.Future;
 
 public class SubMultiplyResult {
 
-    int cordX;
-    int cordY;
-    int[][] subMatrix;
+    private final int cordX;
+    private final int cordY;
+    private final int[][] subMatrix;
 
 
     public SubMultiplyResult(int cordX, int cordY, int[][] subMatrix) {
@@ -15,5 +15,15 @@ public class SubMultiplyResult {
         this.subMatrix = subMatrix;
     }
 
+    public int getCordX() {
+        return cordX;
+    }
 
+    public int getCordY() {
+        return cordY;
+    }
+
+    public int[][] getSubMatrix() {
+        return subMatrix;
+    }
 }

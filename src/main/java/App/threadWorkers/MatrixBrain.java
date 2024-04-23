@@ -37,12 +37,12 @@ public class MatrixBrain extends Thread{
                 }
                 else if (result.getScanType() == TaskType.MULTIPLY) {
                     MultiplyResult multiplyResult = (MultiplyResult) result;
-                    System.out.println("got mult res " + multiplyResult.getMatrixName());
                     if (multiplyResult.futureIsDone()){
-                        System.out.println("IT IS DONE");
                         App.logger.resultRetrieverSorter("Matrix " + multiplyResult.getMatrixName() + " is finished scanning, adding to cache");
+                        App.cashedMatrices.put(multiplyResult.getMatrixName(),
+                                new MatrixData(multiplyResult.getMatrixName(), multiplyResult.getResult(), multiplyResult.getRows(), multiplyResult.getCols(), "-"));
 
-                        printMatrix(multiplyResult.getResult());
+//                        printMatrix(multiplyResult.getResult());
                     }
                     else App.resultQueue.add(result);
                 }

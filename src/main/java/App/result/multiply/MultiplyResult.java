@@ -34,10 +34,19 @@ public class MultiplyResult implements Result<int[][]> {
 
         for (Future<SubMultiplyResult> future : futureResults) {
             try {
-                SubMultiplyResult subResult = future.get(); // Get the result from the future
-                // Place each element of the submatrix into the full matrix at the calculated position
-                for (int i = 0; i < subResult.subMatrix.length; i++) {
-                    System.arraycopy(subResult.subMatrix[i], 0, fullMatrix[subResult.cordX + i], subResult.cordY, subResult.subMatrix[i].length);
+                SubMultiplyResult subResult = future.get();
+//                System.out.println("--" + subResult.getCordX() + " " + subResult.getCordY() + "--");
+//                printMatrix(subResult.getSubMatrix());
+
+                int[][] subMatrix = subResult.getSubMatrix();
+                int startX = subResult.getCordX();
+                int startY = subResult.getCordY();
+
+                // Place the submatrix into the final matrix at the specified coordinates.
+                for (int i = 0; i < subMatrix.length; i++) {
+                    for (int j = 0; j < subMatrix[i].length; j++) {
+                        fullMatrix[startX + i][startY + j] = subMatrix[i][j];
+                    }
                 }
             }
             catch (InterruptedException | ExecutionException e) {
@@ -57,6 +66,15 @@ public class MultiplyResult implements Result<int[][]> {
             }
         }
         return true;
+    }
+
+    public static void printMatrix(int[][] matrix) {
+        for (int[] ints : matrix) {
+            for (int anInt : ints) {
+                System.out.print(anInt + " ");
+            }
+            System.out.println(); // Move to the next line after printing each row
+        }
     }
 
 

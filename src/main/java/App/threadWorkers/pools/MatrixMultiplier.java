@@ -40,66 +40,92 @@ public class MatrixMultiplier {
         MatrixData secondMatrix = multiplyTask.getMatrixData2();
         if (firstMatrix.getCols() != secondMatrix.getRows() || secondMatrix.getCols() != firstMatrix.getRows()) {
             System.err.println("Matrices can not be multiplied (row/col dont match)");
+//            return;
         }
         else if (firstMatrix.getRows() > firstMatrix.getCols()) {//okrecemo jer hocemo da matrica sa manje redova bude levo (tako podeseni for-ovi ispod)
             firstMatrix = multiplyTask.getMatrixData2();
             secondMatrix = multiplyTask.getMatrixData1();
         }
 
-        //podeliti matrice na redove i kolone za workere
-        List<int[][]> subMatricesA = extractRowSubMatrices(firstMatrix.getMatrix());
-        List<int[][]> subMatricesB = extractColumnSubMatrices(secondMatrix.getMatrix());
-        if (subMatricesA.size() != subMatricesB.size()){
+//        podeliti matrice na redove i kolone za workere
+        List<int[]> subMatricesARow = extractRowsAsArrays(firstMatrix.getMatrix());
+        List<int[]> subMatricesBColumns = extractColumnsAsArrays(secondMatrix.getMatrix());
+
+
+//        System.out.println("ROWW");
+//        for (int[] a: subMatricesARow) {
+//            System.out.println("---");
+//            System.out.println(Arrays.toString(a));
+//        }
+//        System.out.println("Columns");
+//        for (int[] b: subMatricesBColumns) {
+//            System.out.println("---");
+//            System.out.println(Arrays.toString(b));
+//        }
+
+        if (subMatricesARow.size() != subMatricesBColumns.size()){
             System.err.println("Matrices have malformed while splitting, exiting");
             return;
         }
-
         //posalje se podeljeno u workere
         List<Future<SubMultiplyResult>> matrixMultiplyResults = new ArrayList<>();
-        for (int i = 0; i < subMatricesA.size(); i++) {
-            for (int j = 0; j < subMatricesB.size(); j++) {
-                matrixMultiplyResults.add(this.completionService.submit(
-                        new MatrixMultiplicationWorker(i * MAXIMUM_ROWS_SIZE, j * MAXIMUM_ROWS_SIZE, subMatricesA.get(i), subMatricesB.get(j))));
+
+        for (int rowCounter = 0; rowCounter < subMatricesARow.size(); rowCounter += MAXIMUM_ROWS_SIZE) {
+            for (int colCounter = 0; colCounter < subMatricesBColumns.size(); colCounter += MAXIMUM_ROWS_SIZE) {
+
+                List<int[]> rowsForWorker = new ArrayList<>();
+                List<int[]> colsForWorker = new ArrayList<>();
+
+                for (int i = 0; i < MAXIMUM_ROWS_SIZE; i++) {
+                    rowsForWorker.add(subMatricesARow.get(rowCounter + i));
+                    colsForWorker.add(subMatricesBColumns.get(colCounter + i));
+                }
+
+                matrixMultiplyResults.add(this.completionService.submit(new MatrixMultiplicationWorker(rowCounter , colCounter , rowsForWorker, colsForWorker)));
+
             }
         }
 
-        //stavi se future na queue
+//        stavi se future na queue
         int finalRows = firstMatrix.getRows();
         int finalCols = secondMatrix.getCols();
         App.resultQueue.add(new MultiplyResult(newName, matrixMultiplyResults, finalRows, finalCols));
     }
 
-
-    public static List<int[][]> extractRowSubMatrices(int[][] matrix) {
-        List<int[][]> submatrices = new ArrayList<>();
-        int rows = matrix.length;
-        int cols = matrix[0].length;
-
-        for (int i = 0; i < rows; i += MAXIMUM_ROWS_SIZE) {
-            int rowCount = Math.min(MAXIMUM_ROWS_SIZE, rows - i);  // Handle cases where rows aren't multiple of 3
-            int[][] submatrix = new int[rowCount][cols];
-            for (int r = 0; r < rowCount; r++) {
-                System.arraycopy(matrix[i + r], 0, submatrix[r], 0, cols);
-            }
-            submatrices.add(submatrix);
+    public List<int[]> extractRowsAsArrays(int[][] matrix) {
+        List<int[]> rowList = new ArrayList<>();
+        for (int[] row : matrix) {
+            // Clone the row to ensure that changes to the original matrix do not affect the extracted rows
+            int[] clonedRow = row.clone();
+            rowList.add(clonedRow);
         }
-        return submatrices;
+        return rowList;
     }
 
-    public static List<int[][]> extractColumnSubMatrices(int[][] matrix) {
-        List<int[][]> submatrices = new ArrayList<>();
+    public static List<int[]> extractColumnsAsArrays(int[][] matrix) {
+        List<int[]> columnList = new ArrayList<>();
         int rows = matrix.length;
+
         int cols = matrix[0].length;
 
-        for (int j = 0; j < cols; j += MAXIMUM_ROWS_SIZE) {
-            int colCount = Math.min(MAXIMUM_ROWS_SIZE, cols - j);  // Handle cases where columns aren't multiple of 3
-            int[][] submatrix = new int[rows][colCount];
-            for (int r = 0; r < rows; r++) {
-                System.arraycopy(matrix[r], j, submatrix[r], 0, colCount);
+        // Iterate over each column in the matrix
+        for (int j = 0; j < cols; j++) {
+            int[] column = new int[rows];  // Create a new array for the column
+            for (int i = 0; i < rows; i++) {
+                column[i] = matrix[i][j];  // Copy each row's j-th element into the column array
             }
-            submatrices.add(submatrix);
+            columnList.add(column);  // Add the column array to the list
         }
-        return submatrices;
+        return columnList;
+    }
+
+    public static void printMatrix(int[][] matrix) {
+        for (int[] ints : matrix) {
+            for (int anInt : ints) {
+                System.out.print(anInt + " ");
+            }
+            System.out.println(); // Move to the next line after printing each row
+        }
     }
 
 

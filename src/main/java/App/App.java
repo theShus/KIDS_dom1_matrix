@@ -132,8 +132,14 @@ public class App {
 //                    if (badCommandLength(tokens.length, 2)) continue;
 
                 }
-                case "print" -> printMatrix(cashedMatrices.get(tokens[1]).getMatrix());
-                case "clear" -> {//todo
+                case "print" -> {
+                    if (!cashedMatrices.containsKey(tokens[1])){
+                        System.err.println("Nonexistent matrix");
+                        continue;
+                    }
+                    printMatrix(cashedMatrices.get(tokens[1]).getMatrix());
+                }
+                case "clear" -> {
                     System.out.println("clear");
 //                    if (badCommandLength(tokens.length, 2)) continue;
 
