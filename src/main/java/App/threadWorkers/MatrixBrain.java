@@ -24,14 +24,6 @@ import java.util.concurrent.Executors;
 public class MatrixBrain extends Thread{
 
     private boolean running = true;
-
-//    private final ExecutorService threadPool;
-//    private final ExecutorCompletionService completionService;//todo change pool
-//    public MatrixBrain() {
-//        threadPool = Executors.newCachedThreadPool();
-//        this.completionService = new ExecutorCompletionService<>(threadPool);
-//    }
-
     ExecutorService fileWriterThreadPool = Executors.newWorkStealingPool();
 
     @Override
@@ -51,7 +43,7 @@ public class MatrixBrain extends Thread{
                     }
                     else App.resultQueue.add(result);
                 }
-                else if (result.getScanType() == TaskType.SQUARE) {//todo check
+                else if (result.getScanType() == TaskType.SQUARE) {
                     MatrixData squaredMatrixData = ((SquareResult) result).getResult();
                     App.logger.resultRetrieverSorter("Matrix " + squaredMatrixData.getName() + " has been squared, adding to cache");
                     App.cashedMatrices.put(squaredMatrixData.getName(), squaredMatrixData);
