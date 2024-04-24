@@ -3,7 +3,6 @@ package App.threadWorkers;
 import App.App;
 import App.PropertyStorage;
 import App.matrixData.task.ScanTask;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -68,6 +67,15 @@ public class SystemExplorer extends Thread {
             lastModifiedMap.put(fileToExplore.getName(), lastModified);
             App.taskQueue.put(new ScanTask(filePath));
         }
+    }
+
+    public void removeMatrixFromLastModified(String matrixFileName){
+        if (!lastModifiedMap.containsKey(matrixFileName)) {
+            System.err.println("Couldn't find matrix file in last modified - skipping");
+            return;
+        }
+        lastModifiedMap.remove(matrixFileName);
+        App.logger.clearingMatrix("Cleared matrix " + matrixFileName + " from last modified list");
     }
 
     public void terminate() {

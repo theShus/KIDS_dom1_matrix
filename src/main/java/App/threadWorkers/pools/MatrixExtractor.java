@@ -101,7 +101,9 @@ public class MatrixExtractor {
     }
 
     public void terminatePool(){
+        System.err.println("Terminating Extractor thread pool");
         threadPool.shutdown();
+        System.err.println("Terminating Square Extractor thread pool");
         sThreadPool.shutdown();
     }
 

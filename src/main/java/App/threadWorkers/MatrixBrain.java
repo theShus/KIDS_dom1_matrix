@@ -11,6 +11,12 @@ import App.result.scan.ScanResult;
 import App.result.scan.SquareResult;
 import App.threadWorkers.pools.workers.MatrixFileWriter;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -66,6 +72,54 @@ public class MatrixBrain extends Thread{
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public void clearMatrixData(String matrixName){
+        if (!App.cashedMatrices.containsKey(matrixName)){
+            System.err.println("Requested matrix is nonexistent");
+            return;
+        }
+        String filePath = App.cashedMatrices.get(matrixName).getFilePath();
+        App.cashedMatrices.remove(matrixName);
+        App.logger.clearingMatrix("Cleared matrix " + matrixName + " from cache");
+        App.cashedMatrices.remove(matrixName + "_square");
+        App.logger.clearingMatrix("Cleared matrix " + matrixName + "_square from cache");
+
+        if (!Objects.equals(filePath, "-")){
+            Path path = Paths.get(filePath);
+            String fileName = path.getFileName().toString();
+            App.systemExplorer.removeMatrixFromLastModified(fileName);
+        }
+    }
+
+    public void clearAllMatrixData(String matrixFileName){
+        Path filePath = null;
+        String matrixName = "";
+
+        //nadjemo file path iz kesiranih matrica, lakse nego da pretrazujemo filove opet
+        for (Map.Entry<String, MatrixData> cashedMapRow: App.cashedMatrices.entrySet()) {
+            Path path = Paths.get(cashedMapRow.getValue().getFilePath());
+            if (path.getFileName().toString().equals(matrixFileName)){
+                filePath = path;
+                matrixName = cashedMapRow.getValue().getName();
+                break;
+            }
+        }
+        if (filePath == null){
+            System.err.println("Requested matrix file could not be found");
+            return;
+        }
+
+        try {
+            Files.deleteIfExists(filePath);
+            App.logger.clearingMatrix("Deleted matrix " + matrixFileName + " from disc - ALT+TAB TO REFRESH INTELLIJ");
+        } catch (IOException e) {
+            System.err.println("Error deleting file: " + filePath);
+        }
+        App.cashedMatrices.remove(matrixName);
+        App.logger.clearingMatrix("Cleared matrix " + matrixName + " from cache");
+        String fileName = filePath.getFileName().toString();
+        App.systemExplorer.removeMatrixFromLastModified(fileName);
     }
 
 

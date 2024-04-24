@@ -34,7 +34,7 @@ public class App {
     public static final Logger logger = new Logger();
 
     //Threads
-    private static final SystemExplorer systemExplorer = new SystemExplorer(dirsToExplore);
+    public static final SystemExplorer systemExplorer = new SystemExplorer(dirsToExplore);
     private static final TaskCoordinator taskCoordinator = new TaskCoordinator();
     private static final MatrixBrain matrixBrain = new MatrixBrain();
 
@@ -154,9 +154,9 @@ public class App {
                     printMatrix(cashedMatrices.get(tokens[1]).getMatrix());
                 }
                 case "clear" -> {
-                    System.out.println("clear");
-//                    if (badCommandLength(tokens.length, 2)) continue;
-
+                    if (badCommandLength(tokens.length, 2, 2)) continue;
+                    if(tokens[1].contains(".rix")) matrixBrain.clearAllMatrixData(tokens[1]);
+                    else matrixBrain.clearMatrixData(tokens[1]);
                 }
                 case "help" -> logger.cli
                         (

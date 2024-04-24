@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 public class MatrixMultiplier {
 
     private final ExecutorService threadPool;
-    private final ExecutorCompletionService<SubMultiplyResult> completionService;//todo change pool
+    private final ExecutorCompletionService<SubMultiplyResult> completionService;
     private static int MAXIMUM_ROWS_SIZE;
 
     public MatrixMultiplier() {
@@ -167,6 +167,7 @@ public class MatrixMultiplier {
     }
 
     public void terminatePool(){
+        System.err.println("Terminating Multiplier thread pool");
         threadPool.shutdown();
     }
 
