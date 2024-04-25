@@ -1,4 +1,4 @@
-matrix_name=A4C4, rows=129, cols=129
+matrix_name=A4C4_example, rows=129, cols=129
 0,0 = 5113971 
 1,0 = 2836088 
 2,0 = 3028266 

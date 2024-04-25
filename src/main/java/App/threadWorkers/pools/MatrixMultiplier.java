@@ -33,59 +33,49 @@ public class MatrixMultiplier {
             newName = multiplyTask.getMatrixData1().getName() + multiplyTask.getMatrixData2().getName();
         } else newName = multiplyTask.getNewName();
 
-
-        //orjentisati matrice pravilno
-        MatrixData firstMatrix = multiplyTask.getMatrixData1();
-        MatrixData secondMatrix = multiplyTask.getMatrixData2();
-        if (firstMatrix.getCols() != secondMatrix.getRows() || secondMatrix.getCols() != firstMatrix.getRows()) {
+        if (multiplyTask.getMatrixData1().getCols() != multiplyTask.getMatrixData2().getRows() ||  multiplyTask.getMatrixData2().getCols() != multiplyTask.getMatrixData1().getRows()) {
             System.err.println("Matrices can not be multiplied (row/col dont match)");
             return;
         }
-        else if (firstMatrix.getRows() > firstMatrix.getCols()) {//okrecemo jer hocemo da matrica sa manje redova bude levo (tako podeseni for-ovi ispod)
-            firstMatrix = multiplyTask.getMatrixData2();
-            secondMatrix = multiplyTask.getMatrixData1();
-        }
 
 //        podeliti matrice na redove i kolone za workere
-        List<int[]> subMatricesARow = extractRowsAsArrays(firstMatrix.getMatrix());
-        List<int[]> subMatricesBColumns = extractColumnsAsArrays(secondMatrix.getMatrix());
+        List<int[]> subMatricesARow = extractRowsAsArrays(multiplyTask.getMatrixData1().getMatrix());
+        List<int[]> subMatricesBColumns = extractColumnsAsArrays(multiplyTask.getMatrixData2().getMatrix());
 
         if (subMatricesARow.size() != subMatricesBColumns.size()){
             System.err.println("Matrices have malformed while splitting, exiting");
             return;
         }
+
         //posalje se podeljeno u workere
         List<Future<SubMultiplyResult>> matrixMultiplyResults = new ArrayList<>();
-        for (int rowCounter = 0; rowCounter < subMatricesARow.size(); rowCounter += MAXIMUM_ROWS_SIZE) {
-            for (int colCounter = 0; colCounter < subMatricesBColumns.size(); colCounter += MAXIMUM_ROWS_SIZE) {
+        List<int[]> rowsForWorker;
+        List<int[]> colsForWorker;
 
-                List<int[]> rowsForWorker = new ArrayList<>();
-                List<int[]> colsForWorker = new ArrayList<>();
-
-                if (rowCounter == subMatricesARow.size()-1) continue;
-                if (colCounter == subMatricesARow.size()-1) continue;
-
-                System.out.println("--------");
-                System.out.println(subMatricesARow.size());
-                System.out.println(subMatricesBColumns.size());
-                System.out.println("AAA");
-                System.out.println(rowCounter);
-                System.out.println(colCounter);
+        for (int rowCounter_ = 0; rowCounter_ < subMatricesARow.size(); rowCounter_ += MAXIMUM_ROWS_SIZE) {
+            for (int colCounter_ = 0; colCounter_ < subMatricesBColumns.size(); colCounter_ += MAXIMUM_ROWS_SIZE) {
+                rowsForWorker = new ArrayList<>();
+                colsForWorker = new ArrayList<>();
 
 
                 for (int i = 0; i < MAXIMUM_ROWS_SIZE; i++) {
-                    rowsForWorker.add(subMatricesARow.get(rowCounter + i));
-                    colsForWorker.add(subMatricesBColumns.get(colCounter + i));
+                    if (rowCounter_ + i == subMatricesARow.size()) break;
+                    rowsForWorker.add(subMatricesARow.get(rowCounter_ + i));
                 }
-                matrixMultiplyResults.add(this.completionService.submit(new MatrixMultiplicationWorker(rowCounter , colCounter , rowsForWorker, colsForWorker)));
+                for (int i = 0; i < MAXIMUM_ROWS_SIZE; i++) {
+                    if (colCounter_ + i == subMatricesBColumns.size())break;
+                    colsForWorker.add(subMatricesBColumns.get(colCounter_ + i));
+                }
+                matrixMultiplyResults.add(this.completionService.submit(new MatrixMultiplicationWorker(rowCounter_ , colCounter_ , rowsForWorker, colsForWorker)));
             }
         }
 
 //        stavi se future na queue
-        int finalRows = firstMatrix.getRows();
-        int finalCols = secondMatrix.getCols();
+        int finalRows = multiplyTask.getMatrixData1().getRows();
+        int finalCols = multiplyTask.getMatrixData2().getCols();
         App.resultQueue.add(new MultiplyResult(newName, matrixMultiplyResults, finalRows, finalCols));
     }
+
 
     public List<int[]> extractRowsAsArrays(int[][] matrix) {
         List<int[]> rowList = new ArrayList<>();
@@ -114,46 +104,45 @@ public class MatrixMultiplier {
         return columnList;
     }
 
-    //BLOCKING
 
+
+
+
+    //BLOCKING
     public void multiplyMatricesBlocking(MultiplyTask multiplyTask){
         String newName;
         if (Objects.equals(multiplyTask.getNewName(), "")){ //ako nema custom ime samo cemo da spojimo imena matrica
             newName = multiplyTask.getMatrixData1().getName() + multiplyTask.getMatrixData2().getName();
-        } else newName = multiplyTask.getNewName();
+        }
+        else newName = multiplyTask.getNewName();
 
         int[][] result = multiplyMatrices(multiplyTask.getMatrixData1(), multiplyTask.getMatrixData2());
+        App.logger.logMultiplying("Finished multiplying matrices " + multiplyTask.getMatrixData1().getName() + " * " + multiplyTask.getMatrixData2().getName() +
+                " saving result to cache");
         App.cashedMatrices.put(newName, new MatrixData(
                 newName,
                 result,
-                multiplyTask.getMatrixData1().getRows(),
-                multiplyTask.getMatrixData1().getCols(),
+                result.length,
+                result[0].length,
                 "-"
         ));
     }
 
     private int[][] multiplyMatrices(MatrixData matrixData1, MatrixData matrixData2) {
-        MatrixData firstMatrix = matrixData1;
-        MatrixData secondMatrix = matrixData2;
-
         //Orjentisemo matrice tako da se poklope za mnozenje
         if (matrixData1.getCols() != matrixData2.getRows() || matrixData2.getCols() != matrixData1.getRows()) {
             System.err.println("Matrices can not be multiplied (row/col dont match)");
             return null;
         }
-        else if (matrixData1.getRows() > matrixData1.getCols()) {//okrecemo jer hocemo da matrica sa manje redova bude levo (tako podeseni for-ovi ispod)
-            firstMatrix = matrixData2;
-            secondMatrix = matrixData1;
-        }
 
-        int[][] mat1 = firstMatrix.getMatrix();//da ne bi get-ovali konstantno, malo efikasnije
-        int[][] mat2 = secondMatrix.getMatrix();
+        int[][] mat1 = matrixData1.getMatrix();//da ne bi get-ovali konstantno, malo efikasnije
+        int[][] mat2 = matrixData2.getMatrix();
 
         //Mnozimo matrice
-        int[][] result = new int[firstMatrix.getRows()][secondMatrix.getCols()];
-        for (int i = 0; i < firstMatrix.getRows(); i++) {
-            for (int j = 0; j < secondMatrix.getCols(); j++) {
-                for (int k = 0; k < firstMatrix.getCols(); k++) {
+        int[][] result = new int[matrixData1.getRows()][matrixData2.getCols()];
+        for (int i = 0; i < matrixData1.getRows(); i++) {
+            for (int j = 0; j < matrixData2.getCols(); j++) {
+                for (int k = 0; k < matrixData1.getCols(); k++) {
                     result[i][j] += mat1[i][k] * mat2[k][j];
                 }
             }

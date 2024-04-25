@@ -24,7 +24,7 @@ public class MatrixScanWorker implements Callable<Map<String, Integer>> {
             file.seek(start); // pomeri pointer na pocetak segmenta
 
             if (start != 0) {
-                file.readLine(); // baci liniju ako je prazna
+                file.readLine(); // baci liniju ako je prazna//todo proveri da li je ovde sve uredu nesto se cudno desilo sa dodavanjem novog dira
             }
 
             String line;

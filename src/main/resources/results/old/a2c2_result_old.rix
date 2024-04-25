@@ -1,4 +1,4 @@
-matrix_name=A2C2, rows=127, cols=117
+matrix_name=A2C2_example, rows=117, cols=117
 0,0 = 12755680 
 1,0 = 10776385 
 2,0 = 11970744 

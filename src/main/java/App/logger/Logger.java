@@ -6,7 +6,8 @@ public class Logger {
     private static final boolean propertyStorage = true;
     private static final boolean logExplorer = false;
     private static final boolean jobDispatcher = true;
-    private static final boolean urlAlreadyScanned = true;
+    private static final boolean clearMatrix = true;
+    private static final boolean multiplying = true;
     private static final boolean resultRetrieverSorter = true;
     private static final boolean fileWriter = true;
 
@@ -18,8 +19,13 @@ public class Logger {
     }
 
     public void clearingMatrix(String message){
-        if (!urlAlreadyScanned) return;
+        if (!clearMatrix) return;
         System.out.println(Color.YELLOW_BRIGHT + message + Color.RESET);
+    }
+
+    public void logMultiplying(String message){
+        if (!multiplying) return;
+        System.out.println(Color.BLUE_BRIGHT + message + Color.RESET);
     }
 
     public void logExplorer(String message){

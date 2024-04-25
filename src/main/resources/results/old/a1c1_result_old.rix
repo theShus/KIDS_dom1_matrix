@@ -1,4 +1,4 @@
-matrix_name=A1C1, rows=146, cols=146
+matrix_name=A1C1_example, rows=146, cols=146
 0,0 = 7129160 
 1,0 = 5387976 
 2,0 = 4317514 
