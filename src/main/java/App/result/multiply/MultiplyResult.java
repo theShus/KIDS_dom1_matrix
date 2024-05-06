@@ -34,9 +34,6 @@ public class MultiplyResult implements Result<int[][]> {
         for (Future<SubMultiplyResult> future : futureResults) {
             try {
                 SubMultiplyResult subResult = future.get();
-//                System.out.println("--" + subResult.getCordX() + " " + subResult.getCordY() + "--");
-//                printMatrix(subResult.getSubMatrix());
-
                 int[][] subMatrix = subResult.getSubMatrix();
                 int startX = subResult.getCordX();
                 int startY = subResult.getCordY();
@@ -64,15 +61,6 @@ public class MultiplyResult implements Result<int[][]> {
             }
         }
         return true;
-    }
-
-    public static void printMatrix(int[][] matrix) {
-        for (int[] ints : matrix) {
-            for (int anInt : ints) {
-                System.out.print(anInt + " ");
-            }
-            System.out.println(); // Move to the next line after printing each row
-        }
     }
 
 

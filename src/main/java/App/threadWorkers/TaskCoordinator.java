@@ -20,10 +20,12 @@ public class TaskCoordinator extends Thread {
                     String filePath = ((ScanTask) task).getFilePath();
                     App.logger.jobDispatcher("Submitted matrix for scanning: " + filePath);
                     App.matrixExtractor.sendMatrixForScanning(filePath);
-                } else if (task.getTaskType() == TaskType.MULTIPLY) {
+                }
+                else if (task.getTaskType() == TaskType.MULTIPLY) {
                     App.matrixMultiplier.multiplyMatricesAsync((MultiplyTask) task);
                     App.logger.jobDispatcher("Submitted matrices for multiplication: " + ((MultiplyTask) task).getMatrixData1().getName() + " * " + ((MultiplyTask) task).getMatrixData2().getName());
-                } else if (task.getTaskType() == TaskType.SQUARE) {
+                }
+                else if (task.getTaskType() == TaskType.SQUARE) {
                     App.logger.jobDispatcher("Submitted matrix for squaring: " + ((SquareTask) task).getMatrixToSquareName());
                     App.matrixExtractor.squareMatrix(((SquareTask) task).getMatrixToSquareName());
                 }

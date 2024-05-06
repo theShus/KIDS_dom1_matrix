@@ -54,21 +54,21 @@ public class MatrixMultiplier {
         List<int[]> rowsForWorker;
         List<int[]> colsForWorker;
 
-        for (int rowCounter_ = 0; rowCounter_ < subMatricesARow.size(); rowCounter_ += MAXIMUM_ROWS_SIZE) {
-            for (int colCounter_ = 0; colCounter_ < subMatricesBColumns.size(); colCounter_ += MAXIMUM_ROWS_SIZE) {
+        for (int rowCounter = 0; rowCounter < subMatricesARow.size(); rowCounter += MAXIMUM_ROWS_SIZE) {
+            for (int colCounter = 0; colCounter < subMatricesBColumns.size(); colCounter += MAXIMUM_ROWS_SIZE) {
                 rowsForWorker = new ArrayList<>();
                 colsForWorker = new ArrayList<>();
 
 
                 for (int i = 0; i < MAXIMUM_ROWS_SIZE; i++) {
-                    if (rowCounter_ + i == subMatricesARow.size()) break;
-                    rowsForWorker.add(subMatricesARow.get(rowCounter_ + i));
+                    if (rowCounter + i == subMatricesARow.size()) break;
+                    rowsForWorker.add(subMatricesARow.get(rowCounter + i));
                 }
                 for (int i = 0; i < MAXIMUM_ROWS_SIZE; i++) {
-                    if (colCounter_ + i == subMatricesBColumns.size()) break;
-                    colsForWorker.add(subMatricesBColumns.get(colCounter_ + i));
+                    if (colCounter + i == subMatricesBColumns.size()) break;
+                    colsForWorker.add(subMatricesBColumns.get(colCounter + i));
                 }
-                matrixMultiplyResults.add(this.completionService.submit(new MatrixMultiplicationWorker(rowCounter_, colCounter_, rowsForWorker, colsForWorker)));
+                matrixMultiplyResults.add(this.completionService.submit(new MatrixMultiplicationWorker(rowCounter, colCounter, rowsForWorker, colsForWorker)));
             }
         }
 

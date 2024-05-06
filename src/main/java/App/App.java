@@ -27,7 +27,6 @@ public class App {
 
     //Results
     public static final Map<String, MatrixData> cashedMatrices = new ConcurrentHashMap<>();
-    public static final Map<String, MatrixData> multipliedMatrices = new ConcurrentHashMap<>();
 
     //Else
     private static final CopyOnWriteArrayList<String> dirsToExplore = new CopyOnWriteArrayList<>();
@@ -67,7 +66,6 @@ public class App {
 
             switch (tokens[0]) {
                 case "dir" -> {
-                    System.out.println("dir");
                     if (badCommandLength(tokens.length, 2, 2)) continue;
                     dirsToExplore.add(tokens[1]);
                     logger.cli("Added directory to scan list");
@@ -143,7 +141,6 @@ public class App {
                     }
 
                     matrixBrain.saveMatrixToFile(cashedMatrices.get(matName), matName, fileName);
-
                 }
                 case "print" -> {
                     if (!cashedMatrices.containsKey(tokens[1])) {
