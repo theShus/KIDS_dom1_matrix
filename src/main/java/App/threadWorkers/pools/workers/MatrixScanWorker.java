@@ -8,9 +8,9 @@ import java.util.concurrent.Callable;
 
 public class MatrixScanWorker implements Callable<Map<String, Integer>> {
 
-   private final String filePath;
-   private final long start;
-   private final long end;
+    private final String filePath;
+    private final long start;
+    private final long end;
 
     public MatrixScanWorker(String filePath, long start, long end) {
         this.filePath = filePath;
@@ -19,7 +19,7 @@ public class MatrixScanWorker implements Callable<Map<String, Integer>> {
     }
 
     @Override
-    public Map<String, Integer> call(){
+    public Map<String, Integer> call() {
         try (RandomAccessFile file = new RandomAccessFile(filePath, "r")) {
             file.seek(start); // pomeri pointer na pocetak segmenta
 
@@ -47,8 +47,7 @@ public class MatrixScanWorker implements Callable<Map<String, Integer>> {
             }
 
             return values;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Error reading the file segment: " + e.getMessage());
         }
         return null;

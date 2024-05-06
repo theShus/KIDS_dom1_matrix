@@ -21,7 +21,7 @@ public class MatrixMultiplicationWorker implements Callable<SubMultiplyResult> {
     }
 
     @Override
-    public SubMultiplyResult call(){
+    public SubMultiplyResult call() {
         int[][] resultMatrix = new int[rows.size()][cols.size()];
 
         // Iterate through each row

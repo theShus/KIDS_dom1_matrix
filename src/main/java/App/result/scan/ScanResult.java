@@ -2,9 +2,7 @@ package App.result.scan;
 
 import App.matrixData.task.TaskType;
 import App.result.Result;
-import jdk.swing.interop.SwingInterOpUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -30,7 +28,7 @@ public class ScanResult implements Result<int[][]> {
     public int[][] getResult() {
         //prodjemo kroz listu rezultata (lista jer podeljena matrica u segmente)
         //svaki element liste je mapa, prodjemo kroz njih i stavimo sve vrednosti u jednu totalnu matricu
-        try{
+        try {
             int[][] matrix = new int[rows][cols];
 
             for (Future<Map<String, Integer>> future : futureResults) {
@@ -43,9 +41,8 @@ public class ScanResult implements Result<int[][]> {
                 }
             }
             return matrix;
-        }
-        catch (Exception e){
-           e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }

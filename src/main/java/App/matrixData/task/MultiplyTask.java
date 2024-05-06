@@ -2,7 +2,7 @@ package App.matrixData.task;
 
 import App.matrixData.MatrixData;
 
-public class MultiplyTask implements Task{
+public class MultiplyTask implements Task {
 
     private final MatrixData matrixData1;
     private final MatrixData matrixData2;

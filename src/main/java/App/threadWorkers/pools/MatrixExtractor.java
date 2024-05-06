@@ -8,6 +8,7 @@ import App.result.scan.ScanResult;
 import App.result.scan.SquareResult;
 import App.threadWorkers.pools.workers.MatrixScanWorker;
 import App.threadWorkers.pools.workers.MatrixSquareWorker;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -80,8 +81,7 @@ public class MatrixExtractor {
 
             if (segmentEnd > fileSize) {//ako je chunk veci od file, uzemi file size
                 segmentEnd = fileSize;
-            }
-            else {
+            } else {
                 file.seek(segmentEnd);
                 while (segmentEnd > segmentStart && file.read() != '\n') {//nadji kraj linije tako da ne uzmes u sredini
                     segmentEnd--;
@@ -89,18 +89,18 @@ public class MatrixExtractor {
                 }
             }
             segments.add(new long[]{segmentStart, segmentEnd});//dodaj granice segmenta
-            currentOffset = segmentEnd ;
+            currentOffset = segmentEnd;
         }
 
         file.close();
         return new SplitMatrix(matrixName, segments, rows, cols);//vracamo u klasi kako bi lakse vradili metadata
     }
 
-    public void squareMatrix(String matrixName){
+    public void squareMatrix(String matrixName) {
         App.resultQueue.add(new SquareResult(this.squareCompletionService.submit(new MatrixSquareWorker(matrixName))));
     }
 
-    public void terminatePool(){
+    public void terminatePool() {
         System.err.println("Terminating Extractor thread pool");
         threadPool.shutdown();
         System.err.println("Terminating Square Extractor thread pool");

@@ -3,11 +3,12 @@ package App.threadWorkers.pools.workers;
 import App.App;
 import App.PropertyStorage;
 import App.matrixData.MatrixData;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class MatrixFileWriter implements Runnable{
+public class MatrixFileWriter implements Runnable {
 
     private final MatrixData matrixData;
     private final String matName;

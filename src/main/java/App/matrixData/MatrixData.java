@@ -1,7 +1,5 @@
 package App.matrixData;
 
-import java.util.Arrays;
-
 public class MatrixData {
     private String name;
     private int[][] matrix;

@@ -2,7 +2,7 @@ package App.result;
 
 import App.matrixData.task.TaskType;
 
-public interface Result <T> {
+public interface Result<T> {
 
     TaskType getScanType();
 

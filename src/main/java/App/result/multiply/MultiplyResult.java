@@ -4,7 +4,6 @@ import App.matrixData.task.TaskType;
 import App.result.Result;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -29,7 +28,7 @@ public class MultiplyResult implements Result<int[][]> {
     }
 
     @Override
-    public int[][]getResult() {
+    public int[][] getResult() {
         int[][] fullMatrix = new int[rows][cols];
 
         for (Future<SubMultiplyResult> future : futureResults) {
@@ -48,8 +47,7 @@ public class MultiplyResult implements Result<int[][]> {
                         fullMatrix[startX + i][startY + j] = subMatrix[i][j];
                     }
                 }
-            }
-            catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 System.err.println("Failed to retrieve submatrix result: " + e.getMessage());
                 Thread.currentThread().interrupt(); // handle the interrupt appropriately
             }

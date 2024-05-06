@@ -90,9 +90,8 @@ public class App {
                                 logger.cli("Matrix " + matrixData.getName() + ": | rows: " + matrixData.getRows() + " | columns: " + matrixData.getCols() + " | file path: " + matrixData.getFilePath());
                             }
                         }
-                    }
-                    else if (tokens.length == 3) {
-                        if (!isEntirelyInteger(tokens[2])){
+                    } else if (tokens.length == 3) {
+                        if (!isEntirelyInteger(tokens[2])) {
                             System.err.println("Bad number input");
                             continue;
                         }
@@ -108,7 +107,7 @@ public class App {
                     boolean asyncFlag = false;
                     String newName = "";
 
-                    if (!cashedMatrices.containsKey(tokens[1]) || !cashedMatrices.containsKey(tokens[2])){
+                    if (!cashedMatrices.containsKey(tokens[1]) || !cashedMatrices.containsKey(tokens[2])) {
                         System.err.println("One of the matrices is nonexistent");
                         continue;
                     }
@@ -138,7 +137,7 @@ public class App {
                         if (Objects.equals(tokens[i], "-file")) fileName = tokens[i + 1];
                     }
 
-                    if (!cashedMatrices.containsKey(matName)){
+                    if (!cashedMatrices.containsKey(matName)) {
                         System.err.println("Requested matrix is nonexistent or matrix hasn't finished work");
                         continue;
                     }
@@ -147,7 +146,7 @@ public class App {
 
                 }
                 case "print" -> {
-                    if (!cashedMatrices.containsKey(tokens[1])){
+                    if (!cashedMatrices.containsKey(tokens[1])) {
                         System.err.println("Nonexistent matrix");
                         continue;
                     }
@@ -155,7 +154,7 @@ public class App {
                 }
                 case "clear" -> {
                     if (badCommandLength(tokens.length, 2, 2)) continue;
-                    if(tokens[1].contains(".rix")) matrixBrain.clearAllMatrixData(tokens[1]);
+                    if (tokens[1].contains(".rix")) matrixBrain.clearAllMatrixData(tokens[1]);
                     else matrixBrain.clearMatrixData(tokens[1]);
                 }
                 case "help" -> logger.cli
@@ -199,28 +198,27 @@ public class App {
     }
 
     private boolean badCommandLength(int tokenLength, int minSize, int maxSize) {
-        if (tokenLength > maxSize || tokenLength < minSize){
+        if (tokenLength > maxSize || tokenLength < minSize) {
             System.err.println("Wrong number of arguments");
             return true;
         }
         return false;
     }
 
-    private void printCashedMatrices(){
+    private void printCashedMatrices() {
         for (Map.Entry<String, MatrixData> entry : cashedMatrices.entrySet()) {
             logger.cli("Matrix " + entry.getValue().getName() + ": | rows: " +
                     entry.getValue().getRows() + " | columns: " + entry.getValue().getCols() + " | file path: " + entry.getValue().getFilePath());
         }
     }
 
-    private void printAscDescMatrices(boolean asc){
+    private void printAscDescMatrices(boolean asc) {
         List<MatrixData> sortedMatrices = sortMatrices(cashedMatrices);
-        if (asc){
-            for (MatrixData md: sortedMatrices) {
+        if (asc) {
+            for (MatrixData md : sortedMatrices) {
                 logger.cli("Matrix " + md.getName() + ": | rows: " + md.getRows() + " | columns: " + md.getCols() + " | file path: " + md.getFilePath());
             }
-        }
-        else {
+        } else {
             for (int i = sortedMatrices.size() - 1; i >= 0; i--) {
                 MatrixData md = sortedMatrices.get(i);
                 logger.cli("Matrix " + md.getName() + ": | rows: " + md.getRows() + " | columns: " + md.getCols() + " | file path: " + md.getFilePath());
@@ -235,7 +233,7 @@ public class App {
                 .collect(Collectors.toList());
     }
 
-    private void printFirstLastMatrices(boolean first, int n){
+    private void printFirstLastMatrices(boolean first, int n) {
         int count = 0;
         if (first) {//Pisi prvih n matrica
             for (Map.Entry<String, MatrixData> entry : cashedMatrices.entrySet()) {
@@ -243,8 +241,7 @@ public class App {
                 logger.cli("Matrix " + entry.getValue().getName() + ": | rows: " +
                         entry.getValue().getRows() + " | columns: " + entry.getValue().getCols() + " | file path: " + entry.getValue().getFilePath());
             }
-        }
-        else {//Pisi poslednjih n matrica
+        } else {//Pisi poslednjih n matrica
             int start = cashedMatrices.size() - n;
             if (start < 0) start = 0;  // In case n is larger than the map size
             for (Map.Entry<String, MatrixData> entry : cashedMatrices.entrySet()) {

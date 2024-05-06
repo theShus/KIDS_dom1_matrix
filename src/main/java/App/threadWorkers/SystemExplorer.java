@@ -3,6 +3,7 @@ package App.threadWorkers;
 import App.App;
 import App.PropertyStorage;
 import App.matrixData.task.ScanTask;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -27,8 +28,7 @@ public class SystemExplorer extends Thread {
                     exploreDirectory(new File(path), path);
                 }
                 Thread.sleep(PropertyStorage.getInstance().getSys_explorer_sleep_time());
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
                 Thread.currentThread().interrupt();
             }
@@ -52,8 +52,7 @@ public class SystemExplorer extends Thread {
                     App.logger.logExplorer("Found rix file: " + file.getName());
                     addFileToQueue(file);
                 }
-            }
-            else {
+            } else {
                 if (!file.canRead()) {
                     System.err.println("Directory can not be opened");
                     continue;
@@ -75,7 +74,7 @@ public class SystemExplorer extends Thread {
         }
     }
 
-    public void removeMatrixFromLastModified(String matrixFileName){
+    public void removeMatrixFromLastModified(String matrixFileName) {
         if (!lastModifiedMap.containsKey(matrixFileName)) {
             System.err.println("Couldn't find matrix file in last modified - skipping");
             return;

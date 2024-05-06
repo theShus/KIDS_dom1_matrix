@@ -9,7 +9,9 @@ import App.result.multiply.MultiplyResult;
 import App.result.multiply.SubMultiplyResult;
 import App.threadWorkers.pools.workers.MatrixMultiplicationWorker;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,14 +28,14 @@ public class MatrixMultiplier {
         this.completionService = new ExecutorCompletionService<>(threadPool);
     }
 
-    public void multiplyMatricesAsync(MultiplyTask multiplyTask){
+    public void multiplyMatricesAsync(MultiplyTask multiplyTask) {
         //ako nema custom ime samo cemo da spojimo imena matrica
         String newName;
-        if (Objects.equals(multiplyTask.getNewName(), "")){
+        if (Objects.equals(multiplyTask.getNewName(), "")) {
             newName = multiplyTask.getMatrixData1().getName() + multiplyTask.getMatrixData2().getName();
         } else newName = multiplyTask.getNewName();
 
-        if (multiplyTask.getMatrixData1().getCols() != multiplyTask.getMatrixData2().getRows() ||  multiplyTask.getMatrixData2().getCols() != multiplyTask.getMatrixData1().getRows()) {
+        if (multiplyTask.getMatrixData1().getCols() != multiplyTask.getMatrixData2().getRows() || multiplyTask.getMatrixData2().getCols() != multiplyTask.getMatrixData1().getRows()) {
             System.err.println("Matrices can not be multiplied (row/col dont match)");
             return;
         }
@@ -42,7 +44,7 @@ public class MatrixMultiplier {
         List<int[]> subMatricesARow = extractRowsAsArrays(multiplyTask.getMatrixData1().getMatrix());
         List<int[]> subMatricesBColumns = extractColumnsAsArrays(multiplyTask.getMatrixData2().getMatrix());
 
-        if (subMatricesARow.size() != subMatricesBColumns.size()){
+        if (subMatricesARow.size() != subMatricesBColumns.size()) {
             System.err.println("Matrices have malformed while splitting, exiting");
             return;
         }
@@ -63,10 +65,10 @@ public class MatrixMultiplier {
                     rowsForWorker.add(subMatricesARow.get(rowCounter_ + i));
                 }
                 for (int i = 0; i < MAXIMUM_ROWS_SIZE; i++) {
-                    if (colCounter_ + i == subMatricesBColumns.size())break;
+                    if (colCounter_ + i == subMatricesBColumns.size()) break;
                     colsForWorker.add(subMatricesBColumns.get(colCounter_ + i));
                 }
-                matrixMultiplyResults.add(this.completionService.submit(new MatrixMultiplicationWorker(rowCounter_ , colCounter_ , rowsForWorker, colsForWorker)));
+                matrixMultiplyResults.add(this.completionService.submit(new MatrixMultiplicationWorker(rowCounter_, colCounter_, rowsForWorker, colsForWorker)));
             }
         }
 
@@ -105,16 +107,12 @@ public class MatrixMultiplier {
     }
 
 
-
-
-
     //BLOCKING
-    public void multiplyMatricesBlocking(MultiplyTask multiplyTask){
+    public void multiplyMatricesBlocking(MultiplyTask multiplyTask) {
         String newName;
-        if (Objects.equals(multiplyTask.getNewName(), "")){ //ako nema custom ime samo cemo da spojimo imena matrica
+        if (Objects.equals(multiplyTask.getNewName(), "")) { //ako nema custom ime samo cemo da spojimo imena matrica
             newName = multiplyTask.getMatrixData1().getName() + multiplyTask.getMatrixData2().getName();
-        }
-        else newName = multiplyTask.getNewName();
+        } else newName = multiplyTask.getNewName();
 
         int[][] result = multiplyMatrices(multiplyTask.getMatrixData1(), multiplyTask.getMatrixData2());
         App.logger.logMultiplying("Finished multiplying matrices " + multiplyTask.getMatrixData1().getName() + " * " + multiplyTask.getMatrixData2().getName() +
@@ -150,12 +148,12 @@ public class MatrixMultiplier {
         return result;
     }
 
-    public void setRowSize(){
+    public void setRowSize() {
         MAXIMUM_ROWS_SIZE = PropertyStorage.getInstance().getMaximum_rows_size();
         System.out.println(MAXIMUM_ROWS_SIZE);
     }
 
-    public void terminatePool(){
+    public void terminatePool() {
         System.err.println("Terminating Multiplier thread pool");
         threadPool.shutdown();
     }

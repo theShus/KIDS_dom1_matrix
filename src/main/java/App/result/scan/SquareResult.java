@@ -30,8 +30,7 @@ public class SquareResult implements Result<MatrixData> {
             matrixData.setRows(newSize);
             matrixData.setCols(newSize);
             return squaredMatrixData.get();
-        }
-        catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
     }

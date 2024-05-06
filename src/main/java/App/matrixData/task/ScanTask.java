@@ -1,6 +1,6 @@
 package App.matrixData.task;
 
-public class ScanTask implements Task{
+public class ScanTask implements Task {
 
     private final String filePath;
 

@@ -1,7 +1,5 @@
 package App.result.multiply;
 
-import java.util.concurrent.Future;
-
 public class SubMultiplyResult {
 
     private final int cordX;

@@ -1,6 +1,6 @@
 package App.matrixData.task;
 
-public class SquareTask implements Task{
+public class SquareTask implements Task {
 
     String matrixToSquareName;
 
