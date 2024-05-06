@@ -7,14 +7,13 @@ public class PropertyStorage {
 
     private static PropertyStorage instance = null;
     private final Properties properties;
-
     private long sys_explorer_sleep_time;
     private long maximum_file_chunk_size;
     private int maximum_rows_size;
     private String start_dir;
     private String save_dir;
 
-    public PropertyStorage() {
+    private PropertyStorage() {
         properties = new Properties();
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream("app.properties"));
