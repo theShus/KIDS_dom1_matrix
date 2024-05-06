@@ -1,4 +1,4 @@
-matrix_name=b2, rows=3, cols=3
+matrix_name=B2_t, rows=3, cols=3
 0,0 = 2
 0,1 = 2
 0,2 = 2

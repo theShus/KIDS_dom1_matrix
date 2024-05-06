@@ -23,7 +23,7 @@ public class TaskCoordinator extends Thread {
                     App.matrixExtractor.sendMatrixForScanning(filePath);
                 }
                 else if (task.getTaskType() == TaskType.MULTIPLY) {
-                    //todo pool submit
+                    App.matrixMultiplier.multiplyMatricesAsync((MultiplyTask) task);
                     App.logger.jobDispatcher("Submitted matrices for multiplication: " + ((MultiplyTask) task).getMatrixData1().getName() + " * " + ((MultiplyTask) task).getMatrixData2().getName());
                 }
                 else if (task.getTaskType() == TaskType.SQUARE) {

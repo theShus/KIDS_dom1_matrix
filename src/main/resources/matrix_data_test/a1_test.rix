@@ -1,4 +1,4 @@
-matrix_name=a1, rows=8, cols=6
+matrix_name=A1_t, rows=8, cols=6
 0,0 = 1
 0,1 = 2
 0,2 = 3

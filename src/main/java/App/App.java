@@ -84,7 +84,7 @@ public class App {
                                 MatrixData matrixData;
                                 if (cashedMatrices.containsKey(tokens[1])) matrixData = cashedMatrices.get(tokens[1]);
                                 else {
-                                    System.err.println("Bad matrix name");
+                                    System.err.println("Nonexistent matrix or matrix hasn't finished work");
                                     continue;
                                 }
                                 logger.cli("Matrix " + matrixData.getName() + ": | rows: " + matrixData.getRows() + " | columns: " + matrixData.getCols() + " | file path: " + matrixData.getFilePath());
@@ -102,7 +102,7 @@ public class App {
                     }
                 }
 
-                case "mult" -> {
+                case "multiply" -> {
                     if (badCommandLength(tokens.length, 3, 6)) continue;
 
                     boolean asyncFlag = false;
@@ -124,7 +124,7 @@ public class App {
                             newName
                     );
 
-                    if (asyncFlag) matrixMultiplier.multiplyMatricesAsync(multiplyTask);
+                    if (asyncFlag) taskQueue.add(multiplyTask);
                     else matrixMultiplier.multiplyMatricesBlocking(multiplyTask);
                 }
                 case "save" -> {
@@ -139,7 +139,7 @@ public class App {
                     }
 
                     if (!cashedMatrices.containsKey(matName)){
-                        System.err.println("Requested matrix is nonexistent");
+                        System.err.println("Requested matrix is nonexistent or matrix hasn't finished work");
                         continue;
                     }
 

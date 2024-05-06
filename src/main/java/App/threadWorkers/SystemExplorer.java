@@ -53,7 +53,13 @@ public class SystemExplorer extends Thread {
                     addFileToQueue(file);
                 }
             }
-            else exploreDirectory(file, path);
+            else {
+                if (!file.canRead()) {
+                    System.err.println("Directory can not be opened");
+                    continue;
+                }
+                exploreDirectory(file, path);
+            }
         }
     }
 

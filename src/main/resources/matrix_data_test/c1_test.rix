@@ -1,4 +1,4 @@
-matrix_name=c1, rows=7, cols=10
+matrix_name=C1_t, rows=7, cols=10
 0,0 = 5
 0,1 = 7
 0,2 = 3
