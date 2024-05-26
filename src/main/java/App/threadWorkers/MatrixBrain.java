@@ -38,12 +38,15 @@ public class MatrixBrain extends Thread {
                         App.cashedMatrices.put(scanResult.getMatrixName(), matrixData);
 
                         App.taskQueue.add(new SquareTask(scanResult.getMatrixName()));//stavimo novi task da se napravi kvadratna matrica
-                    } else App.resultQueue.add(result);
-                } else if (result.getScanType() == TaskType.SQUARE) {
+                    }
+                    else App.resultQueue.add(result);
+                }
+                else if (result.getScanType() == TaskType.SQUARE) {
                     MatrixData squaredMatrixData = ((SquareResult) result).getResult();
                     App.logger.resultRetrieverSorter("Matrix " + squaredMatrixData.getName() + " has been squared, adding to cache");
                     App.cashedMatrices.put(squaredMatrixData.getName(), squaredMatrixData);
-                } else if (result.getScanType() == TaskType.MULTIPLY) {
+                }
+                else if (result.getScanType() == TaskType.MULTIPLY) {
                     MultiplyResult multiplyResult = (MultiplyResult) result;
                     if (multiplyResult.futureIsDone()) {
                         App.logger.resultRetrieverSorter("Matrix " + multiplyResult.getMatrixName() + " is finished multiplying, adding to cache");

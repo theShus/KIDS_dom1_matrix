@@ -114,6 +114,11 @@ public class MatrixMultiplier {
             newName = multiplyTask.getMatrixData1().getName() + multiplyTask.getMatrixData2().getName();
         } else newName = multiplyTask.getNewName();
 
+        if (multiplyTask.getMatrixData1().getCols() != multiplyTask.getMatrixData2().getRows() || multiplyTask.getMatrixData2().getCols() != multiplyTask.getMatrixData1().getRows()) {
+            System.err.println("Matrices can not be multiplied (row/col dont match)");
+            return;
+        }
+
         int[][] result = multiplyMatrices(multiplyTask.getMatrixData1(), multiplyTask.getMatrixData2());
         App.logger.logMultiplying("Finished multiplying matrices " + multiplyTask.getMatrixData1().getName() + " * " + multiplyTask.getMatrixData2().getName() +
                 " saving result to cache");
